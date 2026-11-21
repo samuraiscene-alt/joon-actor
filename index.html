@@ -1,7 +1,7 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f8fc"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon.png"><title>JOON ACTOR · 대사 연습 v1.3</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f8fc"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon.png"><title>JOON ACTOR · 대사 연습 v1.4</title><style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#172337;background:#f6f8fc}*{box-sizing:border-box}body{margin:0}button,textarea,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:700}header{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;max-width:740px;margin:auto}header b{font-size:19px}main{max-width:740px;margin:auto;padding:10px 16px 70px}h1{font-size:28px;margin:20px 0 8px;line-height:1.35}p{color:#687993;line-height:1.6}input[type=text],textarea,select{background:white;color:#172337;border:1px solid #dce4f0;border-radius:11px;padding:12px;width:100%}textarea{min-height:95px;resize:vertical;line-height:1.6}.row{display:flex;gap:8px;align-items:center;justify-content:space-between}.line{background:white;border:1px solid #e1e8f4;border-radius:16px;padding:13px;margin:12px 0;box-shadow:0 3px 14px #12284b08}.line .row{margin-bottom:10px}.line select{flex:1;min-width:0;background:#f5f8fe}.line button{padding:8px 12px;background:#eef2f9;color:#506580}.line button.del{color:#c6364e;background:#fff0f1}.small{font-size:12px;color:#7c8ea8}.primary{background:#2769ed;color:white}.secondary{background:#e7eef9;color:#365d9c}.actions{display:flex;gap:10px;margin:20px 0}.actions button{flex:1}#add{width:100%;background:#edf4ff;color:#2863c9;border:1px dashed #9cb9e9}#settings{background:white;border-radius:16px;padding:16px;margin:15px 0}#settings label{display:block;font-size:13px;font-weight:700;margin:12px 0 7px}#settings input[type=range]{width:100%}.hidden{display:none!important}#stage{position:fixed;z-index:20;inset:0;background:#111827;color:white;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}.stagehead,.stagefoot{padding:15px 16px;background:#182337}.stagehead{display:flex;justify-content:space-between;align-items:center}.stagehead button,.stagefoot button{background:#2b3c57;color:white}.stagehead small{display:block;color:#adc1dc;margin-top:6px}#scroll{flex:1;overflow:auto;padding:18px 16px;scroll-behavior:smooth}.stline{border:1px solid #33445d;background:#1c293e;border-radius:14px;padding:15px;margin-bottom:12px;opacity:.56}.stline.active{opacity:1;border:2px solid #60a5fa;background:#1c3252}.stline.done{opacity:.3}.stline .role{font-size:12px;font-weight:700;color:#9ec8ff;margin-bottom:10px}.stline.me .role{color:#7ee7b3}.stline.direction .role{color:#ceb1ff}.stline .text{font-size:19px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.stline.active .text{font-size:23px;font-weight:650}#notice{color:#c3d7f1;font-size:13px;min-height:20px;margin-bottom:12px}.stagefoot .row button{flex:1}#finish{position:fixed;z-index:30;inset:0;background:#0009;display:grid;place-items:center;padding:20px}.modal{background:white;border-radius:22px;padding:26px;text-align:center;width:100%;max-width:390px}.modal h2{margin:8px 0}.modal button{width:100%}#status{font-size:12px;color:#718299}@media(max-width:380px){.stline .text{font-size:17px}.stline.active .text{font-size:20px}}
-</style></head><body><header><b>JOON ACTOR <span class="small">v1.3</span></b><button id="voiceBtn" class="secondary">⚙ 음성</button></header><main><h1>대본을 붙여넣고<br>바로 연습하세요.</h1><p>지문은 읽지 않고, 상대역은 음성으로 말합니다. 내 대사는 자동 음성 인식으로 다음 순서로 넘어갑니다.</p><div class="row"><b>대본 제목</b><span id="status">자동 저장</span></div><input type="text" id="title" placeholder="대본 제목"><div class="row" style="margin-top:22px"><h3>대사 순서</h3><span id="count" class="small"></span></div><div id="lines"></div><button id="add">＋ 대사 추가</button><div class="actions"><button id="clear" class="secondary">대본 비우기</button><button id="start" class="primary">▶ 대사 시작</button><button id="endSession" class="secondary hidden">■ 종료</button></div><section id="settings" class="hidden"><div class="row"><b>상대역 음성 설정</b><button id="closeSettings">닫기</button></div><p class="small">기기 음성을 사용합니다. 사람 같은 고품질 AI 음성 API는 아직 연결되지 않았습니다.</p><p id="voiceHint" class="small"></p><label>상대방 1 목소리 · 낮은 음색</label><select id="voice1"></select><label>상대방 2 목소리 · 높은 음색</label><select id="voice2"></select><label>음성 속도 <span id="rateLabel"></span></label><input id="rate" type="range" min="0.75" max="1.15" step="0.01"><label>반응 간격 <span id="pauseLabel"></span></label><input id="pause" type="range" min="0" max="1.5" step="0.1"><div class="actions"><button id="sample1" class="secondary">1 미리듣기</button><button id="sample2" class="secondary">2 미리듣기</button></div></section></main>
-<div id="stage" class="hidden" role="dialog" aria-modal="true"><div class="stagehead"><div><b>● 대사 연습 중</b><small id="progress"></small></div><button id="exit">✕ 닫기</button></div><div id="scroll"><div id="script"></div></div><div class="stagefoot"><div id="notice" aria-live="polite"></div><div class="row"><button id="repeat">↻ 다시 듣기</button><button id="next">다음 →</button></div></div></div>
+</style></head><body><header><b>JOON ACTOR <span class="small">v1.4</span></b><button id="voiceBtn" class="secondary">⚙ 음성</button></header><main><h1>대본을 붙여넣고<br>바로 연습하세요.</h1><p>지문은 읽지 않고, 상대역은 음성으로 말합니다. 내 대사는 자동 음성 인식으로 다음 순서로 넘어갑니다.</p><div class="row"><b>대본 제목</b><span id="status">자동 저장</span></div><input type="text" id="title" placeholder="대본 제목"><div class="row" style="margin-top:22px"><h3>대사 순서</h3><span id="count" class="small"></span></div><div id="lines"></div><button id="add">＋ 대사 추가</button><div class="actions"><button id="clear" class="secondary">대본 비우기</button><button id="start" class="primary">▶ 대사 시작</button><button id="endSession" class="secondary hidden">■ 종료</button></div><section id="settings" class="hidden"><div class="row"><b>상대역 음성 설정</b><button id="closeSettings">닫기</button></div><p class="small">기기 음성을 사용합니다. 사람 같은 고품질 AI 음성 API는 아직 연결되지 않았습니다.</p><p id="voiceHint" class="small"></p><label>상대방 1 목소리 · 낮은 음색</label><select id="voice1"></select><label>상대방 2 목소리 · 높은 음색</label><select id="voice2"></select><label>음성 속도 <span id="rateLabel"></span></label><input id="rate" type="range" min="0.75" max="1.15" step="0.01"><label>반응 간격 <span id="pauseLabel"></span></label><input id="pause" type="range" min="0" max="1.5" step="0.1"><div class="actions"><button id="sample1" class="secondary">1 미리듣기</button><button id="sample2" class="secondary">2 미리듣기</button></div></section></main>
+<div id="stage" class="hidden" role="dialog" aria-modal="true"><div class="stagehead"><div><b>● 대사 연습 중</b><small id="progress"></small></div><button id="exit">✕ 닫기</button></div><div id="scroll"><div id="script"></div></div><div class="stagefoot"><div id="notice" aria-live="polite"></div><div class="row"><button id="repeat">🎤 마이크 재연결</button><button id="next">다음 →</button></div></div></div>
 <div id="finish" class="hidden"><div class="modal"><h2>✓ 대본 연습 완료</h2><p>모든 대사가 끝났습니다. 대본은 저장돼 있습니다.</p><button id="end" class="primary">종료</button></div></div>
 <script>
 (()=>{'use strict';const $=id=>document.getElementById(id),K='joon-script-v1',N={direction:'지문',role1:'상대방 1',role2:'상대방 2',me:'나'},D={title:'첫 번째 대본',lines:[{role:'direction',text:'어두운 골목. 두 사람이 마주 선다.'},{role:'role1',text:'여기서 뭐 하는 거야?'},{role:'role2',text:'빨리 대답해.'},{role:'me',text:'그냥 기다리고 있었어.'},{role:'role1',text:'누구를 기다렸는데?'},{role:'direction',text:'잠시 정적이 흐른다.'}],settings:{voice1:'',voice2:'',rate:.96,pause:.5}};let s;try{s=JSON.parse(localStorage.getItem(K))||D;if(!Array.isArray(s.lines))s=D;s.settings={...D.settings,...s.settings}}catch{s=structuredClone(D)};let index=0,token=0,running=false,rec=null,voices=[],timer=0,saveTimer=0,listenGeneration=0;
@@ -28,37 +28,55 @@ function notice(t){$('notice').textContent=t}function stageDraw(){let host=$('sc
 function stop(){running=false;token++;cancel();$('stage').classList.add('hidden')}
 function complete(){stop();$('status').textContent='✓ 대본 연습 완료 · 종료를 눌러주세요';$('endSession').classList.remove('hidden');$('start').classList.add('hidden')}function step(t){if(!running||t!==token)return;cancel();index++;if(index>=s.lines.length){complete();return}stageDraw();process(t)}
 function listen(t,expected){
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){notice('음성 인식 미지원 · 다음 버튼으로 진행 가능합니다');return}
-const lineIndex=index,generation=listenGeneration,target=norm(expected);let heard='',finalHeard='',matched=false,finished=false,stopped=false,tries=0,lastAt=Date.now(),active=null,checkTimer=0,restartTimer=0;
-const minCoverage=target.length<=7?.88:target.length<=16?.78:.73,quiet=1450;
-function score(text){const a=norm(text);if(!a)return 0;return Math.min(1,match(text,expected))*Math.min(1,a.length/Math.max(1,target.length))}
-function verify(){let best=Math.max(score(heard),score(finalHeard));matched=best>=minCoverage;return best}
-function schedule(){clearTimeout(checkTimer);if(!matched||!running||token!==t||index!==lineIndex||generation!==listenGeneration)return;checkTimer=setTimeout(()=>{if(!running||token!==t||index!==lineIndex||generation!==listenGeneration)return;if(matched&&Date.now()-lastAt>=quiet){if(active){active.onresult=active.onerror=active.onend=null;try{active.abort()}catch{}}step(t)}else schedule()},Math.max(150,quiet-(Date.now()-lastAt)))}
-function begin(){if(!running||token!==t||index!==lineIndex||generation!==listenGeneration||stopped||finished)return;
-const r=new SR();active=r;rec=r;r.lang='ko-KR';r.continuous=false;r.interimResults=true;r.maxAlternatives=1;let resultSeen=false;
-r.onresult=e=>{if(!running||token!==t||index!==lineIndex||generation!==listenGeneration)return;let newText='',newFinal='';
-for(let i=0;i<e.results.length;i++){let v=e.results[i][0]?.transcript||'';newText+=' '+v;if(e.results[i].isFinal)newFinal+=' '+v}
-newText=newText.trim();newFinal=newFinal.trim();resultSeen=true;
-if(newText&&newText!==heard){heard=newText;lastAt=Date.now()}
-if(newFinal){finalHeard=newFinal;lastAt=Date.now()}
-let confidence=verify();notice('🎤 '+(heard||'듣는 중…')+' · '+Math.round(confidence*100)+'% 일치'+(matched?' · 말 끝 확인 중':' · 계속 말씀하세요'));
-if(matched)schedule()
-};
-r.onerror=e=>{if(!running||token!==t)return;
-if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){stopped=true;notice('마이크 권한/장치 문제 · 다음 버튼으로 진행 가능합니다')}
-else if(e.error==='network'){notice('인식 네트워크 연결 오류 · 다시 듣기 또는 다음 버튼 사용 가능')}
-else if(e.error==='no-speech'){notice('소리가 감지되지 않았습니다 · 다시 말해 주세요')}
-};
-r.onend=()=>{if(!running||token!==t||index!==lineIndex||generation!==listenGeneration||stopped||finished)return;active=null;rec=null;
-if(matched){schedule();return}
-if(++tries<=35){restartTimer=setTimeout(begin,400);timer=restartTimer}
-else notice('음성 인식이 계속 중단됩니다 · 다시 듣기 또는 다음 버튼을 이용하세요')
-};
-try{r.start();notice('🎤 듣는 중 · 내 대사를 말해 주세요')}
-catch{notice('마이크 시작 실패 · 다시 듣기 또는 다음 버튼을 사용하세요')}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){notice('음성 인식 기능을 사용할 수 없습니다 · 다음 버튼을 눌러주세요');return}
+const lineIndex=index,generation=listenGeneration,target=norm(expected),quiet=1500;
+let heard='',finalText='',lastAt=Date.now(),matched=false,started=false,attempt=0,recognizer=null,done=false,settleTimer=0,retryTimer=0;
+const live=()=>running&&token===t&&index===lineIndex&&generation===listenGeneration&&!done;
+const score=text=>{let a=norm(text);if(!a||!target)return 0;return match(text,expected)*Math.min(1,a.length/target.length)};
+const threshold=target.length<=7?.87:target.length<=16?.78:.72;
+function advanceIfQuiet(){
+clearTimeout(settleTimer);if(!live()||!matched)return;
+settleTimer=setTimeout(()=>{if(!live())return;if(Date.now()-lastAt<quiet){advanceIfQuiet();return}
+done=true;const old=recognizer;recognizer=null;if(old){old.onresult=old.onerror=old.onend=old.onstart=null;try{old.abort()}catch{}}step(t)},Math.max(130,quiet-(Date.now()-lastAt)))
 }
-begin()
+function tryStart(){
+if(!live())return;
+clearTimeout(retryTimer);attempt++;
+let r=new SR();recognizer=r;rec=r;r.lang='ko-KR';r.continuous=false;r.interimResults=true;r.maxAlternatives=1;
+started=false;
+notice('🎤 마이크 연결 중… ('+attempt+'회)');
+r.onstart=()=>{if(!live())return;started=true;notice('🎤 마이크 연결됨 · 내 대사를 말하세요')};
+r.onaudiostart=()=>{if(!live())return;started=true;notice('🎤 소리 듣는 중 · 내 대사를 말하세요')};
+r.onresult=e=>{
+if(!live())return;
+let latest='',fin='';for(let i=0;i<e.results.length;i++){let phrase=e.results[i][0]?.transcript||'';latest+=' '+phrase;if(e.results[i].isFinal)fin+=' '+phrase}
+latest=latest.trim();fin=fin.trim();if(latest&&latest!==heard){heard=latest;lastAt=Date.now()}if(fin&&fin!==finalText){finalText=fin;lastAt=Date.now()}
+let confidence=Math.max(score(heard),score(finalText));matched=confidence>=threshold;
+notice('🎤 인식: '+(heard||'듣는 중…')+' · '+Math.round(confidence*100)+'% 일치'+(matched?' · 발화 종료 확인 중':''));
+if(matched)advanceIfQuiet()
+};
+r.onerror=e=>{
+if(!live())return;
+const code=e.error||'unknown';
+if(['not-allowed','service-not-allowed','audio-capture'].includes(code)){notice('마이크/음성 인식 차단 ('+code+') · 아래 마이크 재연결을 눌러주세요');return}
+if(code==='network'){notice('음성 인식 네트워크 오류 · 재연결을 시도합니다')}
+else if(code==='no-speech'){notice('목소리가 들리지 않았습니다 · 다시 연결 중')}
+else notice('음성 인식 오류: '+code+' · 재연결 중')
+};
+r.onend=()=>{
+if(!live())return;
+if(rec===r)rec=null;recognizer=null;started=false;
+if(matched){advanceIfQuiet();return}
+if(attempt>=12){notice('마이크 자동 재연결 실패 · 마이크 재연결 또는 다음 버튼을 눌러주세요');return}
+notice('🎤 인식 연결 종료 · 재연결 중 ('+attempt+'/12)');
+retryTimer=setTimeout(()=>{if(live())tryStart()},Math.min(1200,300+attempt*100));
+};
+try{r.start()}catch(e){if(!live())return;notice('마이크 시작 실패: '+(e.name||'unknown')+' · 재연결을 눌러주세요')}
 }
+tryStart()
+}
+
 function process(t){if(!running||t!==token)return;let line=s.lines[index];if(!line){complete();return}if(!line.text.trim()){step(t);return}if(line.role==='direction'){notice('지문 표시 · AI는 읽지 않음');timer=setTimeout(()=>step(t),Math.min(3500,Math.max(1200,line.text.length*55)));return}if(line.role==='me'){notice('🎤 내 대사를 말하세요');listen(t,line.text);return}notice(N[line.role]+' 대사 재생 중');timer=setTimeout(()=>{if(!running||token!==t)return;speak(line.text,line.role,()=>{if(running&&token===t)timer=setTimeout(()=>step(t),s.settings.pause*1000)})},s.settings.pause*1000)}
 $('start').onclick=()=>{if(!s.lines.some(l=>l.text.trim())){alert('대사를 입력하세요');return}stop();index=0;running=true;token++;$('endSession').classList.add('hidden');$('start').classList.remove('hidden');$('finish').classList.add('hidden');$('stage').classList.remove('hidden');stageDraw();process(token)};$('endSession').onclick=()=>{$('endSession').classList.add('hidden');$('start').classList.remove('hidden');$('status').textContent='연습 종료 · 대본 저장됨';save()};$('next').onclick=()=>step(token);$('repeat').onclick=()=>{if(!running)return;cancel();process(token)};$('exit').onclick=stop;$('end').onclick=()=>$('finish').classList.add('hidden');
 $('voiceBtn').onclick=()=>{$('settings').classList.toggle('hidden');if('speechSynthesis'in window)voicesLoad()};$('closeSettings').onclick=()=>$('settings').classList.add('hidden');for(let id of ['voice1','voice2'])$(id).onchange=e=>{s.settings[id]=e.target.value;delayed()};for(let id of ['rate','pause']){$(id).value=s.settings[id];$(id).oninput=e=>{s.settings[id]=+e.target.value;$(id==='rate'?'rateLabel':'pauseLabel').textContent=e.target.value+(id==='rate'?'×':'초');delayed()};$(id==='rate'?'rateLabel':'pauseLabel').textContent=s.settings[id]+(id==='rate'?'×':'초')};$('sample1').onclick=()=>speak('여기서 뭐 하는 거야?','role1');$('sample2').onclick=()=>speak('괜찮아. 천천히 말해.','role2');document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){cancel();notice('앱을 다시 열면 다시 듣기를 눌러주세요')}});render();save();
