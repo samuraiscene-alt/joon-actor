@@ -11,12 +11,17 @@
 #ocrPanel small{color:#697482}#ocrAnalysis{white-space:pre-wrap;line-height:1.65;font-size:14px}
 #ocrPanel .ocrHint{font-size:13px;color:#714e14;background:#fff8e8;padding:10px;border-radius:10px}
 </style></head>
-<body><main><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.2.1</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
-<section><h2>내 대본</h2><p class="muted">대본은 브라우저에만 저장돼. 서버로 업로드하지 않아.</p><input id="title" aria-label="대본 제목" placeholder="대본 제목"><div class="actions"><label class="upload">TXT / OCR JSON 열기<input id="import" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="save" class="primary">기기에 저장</button><button id="export">TXT 백업</button></div><label class="upload" style="margin-top:8px">PDF 불러오기<input id="pdfImport" type="file" accept="application/pdf,.pdf"></label><p class="stat" id="status">대본 없음</p><p class="stat">대본은 브라우저에서만 열립니다. PDF 이미지 속 글자는 아직 자동 OCR을 지원하지 않습니다.</p><div id="pdfPreview"></div></section>
+<body><main><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.2.2</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
+<section><h2>내 대본</h2><p class="muted">대본은 브라우저에만 저장돼. 서버로 업로드하지 않아.</p><input id="title" aria-label="대본 제목" placeholder="대본 제목"><div class="actions"><label class="upload">TXT / OCR JSON 열기<input id="import" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="save" class="primary">기기에 저장</button><button id="export">TXT 백업</button></div><div style="margin:12px 0 10px;padding:13px;border-radius:14px;background:#f1f5ff">
+<strong>원본 문자 우선 불러오기</strong><p class="muted" style="margin:6px 0">HWPX 및 글자 선택이 가능한 PDF를 OCR 없이 직접 읽어. 구형 HWP는 HWPX로 변환해야 해.</p>
+<label class="upload">HWPX / PDF 원문 가져오기<input id="structuredImport" type="file" accept=".hwpx,.hwp,.pdf,application/pdf"></label>
+<button id="structuredRestore">추출 결과 복원</button>
+<p id="importStatus" class="stat" role="status">원문 추출 전 · 외부 AI 서버로 업로드하지 않음</p></div>
+<label class="upload" style="margin-top:8px">스캔 PDF 열기<input id="pdfImport" type="file" accept="application/pdf,.pdf"></label><p class="stat" id="status">대본 없음</p><p class="stat">PDF 원문 추출과 스캔형 OCR은 서로 다른 기능이야. 스캔형 PDF는 OCR 오인식 검토가 필요해.</p><div id="pdfPreview"></div></section>
 <section><h2>대본 편집</h2><textarea id="script" placeholder="여기에 대본을 붙여넣거나 TXT 파일을 열어줘."></textarea><div class="actions"><button id="speak">선택 문장 읽기</button><button id="stop">음성 정지</button></div></section>
 <section><h2>리딩 설정</h2><div class="split"><select id="mode" aria-label="연기 모드"><option>대본 그대로</option><option>자연스러운 연기 (개발 예정)</option></select><select id="rate" aria-label="읽기 속도"><option value="0.85">느리게</option><option value="1" selected>보통</option><option value="1.15">빠르게</option></select></div><p class="warning">실시간 마이크 대화, 배역 자동 분리, AI 감정 연기는 아직 연결되지 않았어. 현재는 대본 입력·저장 및 선택 문장 읽기 테스트 버전이야.</p></section>
 <section id="ocrPanel">
-<h2>대본 자동 판독 · v0.2.1</h2>
+<h2>스캔형 PDF OCR · v0.2.2</h2>
 <p class="ocrHint">스캔 PDF 한글 OCR은 오탈자가 발생할 수 있어. 원본 화면과 인식 결과를 비교하고 교정한 뒤 저장해 줘. OCR은 이 아이폰에서 처리하며, 첫 실행은 언어 모델 다운로드가 필요해. PDF 원본은 서버에 전송하지 않아.</p>
 <div class="ocrRow"><label for="ocrPage">원본 페이지</label><select id="ocrPage"><option value="1">1페이지</option></select><small id="ocrCount">PDF 미선택</small></div>
 <div id="ocrCanvasWrap"><p class="muted">PDF를 불러오면 원본 페이지가 표시돼.</p></div>
@@ -98,4 +103,4 @@ $('ocrExport').onclick=()=>{flush();download('JOON_ACTOR_대본_판독.txt',Obje
 $('ocrJson').onclick=()=>{flush();download('JOON_ACTOR_OCR_백업.json',JSON.stringify({version:2,title:rawFile?.name||'대본',pages:Array.from({length:pdf?.numPages||0},(_,i)=>records[i+1]||''),reviewNeeded:true},null,2),'application/json')};
 $('ocrAnalyze').onclick=()=>{flush();const lines=$('ocrText').value.split(/\n/).map(x=>x.trim()).filter(Boolean);let scene=[],dialog=[],action=[];for(const s of lines){if(/^(S[#＃]?\s*\d+|SCENE\s*\d+)/i.test(s))scene.push(s);else if(/^([가-힣]{2,8}|MC|PD|\w{2,8})\s*[:：\t]\s*.+/.test(s))dialog.push(s);else action.push(s)}$('ocrAnalysis').textContent='장면 후보 '+scene.length+'줄 · 대사 후보 '+dialog.length+'줄 · 기타/지문 후보 '+action.length+'줄\n\n[장면]\n'+scene.slice(0,6).join('\n')+'\n\n[대사]\n'+dialog.slice(0,8).join('\n')+'\n\n주의: 스캔 OCR에서는 인물명과 들여쓰기가 손상되어 분류 오류가 많을 수 있어. 확정 전 직접 검토해야 해.'};
 })();
-</script></body></html>
+</script><script src="./document-import.js"></script></body></html>
