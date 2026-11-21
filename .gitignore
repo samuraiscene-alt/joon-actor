@@ -1,0 +1,8 @@
+source.pdf
+pages/
+ocr-data.json
+*.hwp
+*.hwpx
+.env
+.env.*
+!/.env.example
