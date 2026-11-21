@@ -4,20 +4,20 @@
 *{box-sizing:border-box}html{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#171b27;background:#f5f6fa}body{margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}main{max-width:620px;margin:auto;padding:23px 16px 45px}
 header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 18px}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}.muted{color:#6e798a;font-size:13px;line-height:1.5}section{padding:18px;background:#fff;border-radius:21px;border:1px solid #ebedf2;margin:13px 0;box-shadow:0 3px 12px #22222208}label{display:block;font-size:14px;font-weight:650;margin:12px 0 7px}textarea{width:100%;min-height:90px;resize:vertical;padding:14px;border:1px solid #d9dfe8;border-radius:15px;font:inherit;font-size:16px;line-height:1.6;color:#202837;background:#fff}button{border:0;border-radius:15px;padding:14px 16px;font:inherit;font-weight:650;background:#eaf0ff;color:#275cc1;cursor:pointer}button:disabled{opacity:.43}.primary{background:#2169ed;color:#fff}.row{display:flex;gap:9px;flex-wrap:wrap}.row button{flex:1}.card{background:#f3f6fc;border-radius:15px;padding:15px;margin:10px 0;line-height:1.5}#status{font-weight:700;font-size:17px}#heard{white-space:pre-wrap;min-height:35px}#speakerBadge{font-size:12px;color:#52627d;font-weight:700}.hint{padding:12px;border-radius:12px;background:#fff7e5;color:#755521;font-size:13px;line-height:1.5}a{color:#2366d9;text-decoration:none}#count{font-variant-numeric:tabular-nums}small{display:block;color:#7e8898}.step{display:flex;align-items:center;gap:8px;margin:0 0 8px}.pill{display:inline-block;padding:5px 10px;background:#eaf0ff;border-radius:10px;color:#255bc0;font-size:12px;font-weight:700}.steps{display:flex;gap:5px;margin-bottom:14px}.steps>span{height:7px;background:#e3e6ed;border-radius:8px;flex:1}.steps>span.done{background:#6ca5fb}.steps>span.active{background:#246af0}
 </style></head><body><main>
-<header><div><h1>JOON ACTOR</h1><div class="muted">상대방 → 나 → 상대방 → 나 · v0.3</div></div><img src="./icon.png" alt="" width="52" height="52" style="border-radius:12px"></header>
+<header><div><h1>JOON ACTOR</h1><div class="muted">상대방 → 나 → 상대방 → 나 · v0.4</div></div><img src="./icon.png" alt="" width="52" height="52" style="border-radius:12px"></header>
 <section><h2>4개 대사 입력</h2>
 <div class="step"><span class="pill">1 · 상대방 (음성)</span></div><textarea id="ai1">어젯밤 어디 있었습니까?</textarea>
 <div class="step" style="margin-top:12px"><span class="pill">2 · 나 (마이크)</span></div><textarea id="me1">그 시간에는 집에 있었습니다.</textarea>
 <div class="step" style="margin-top:12px"><span class="pill">3 · 상대방 (음성)</span></div><textarea id="ai2">그 말을 증명할 사람이 있습니까?</textarea>
 <div class="step" style="margin-top:12px"><span class="pill">4 · 나 (마이크)</span></div><textarea id="me2">네, 가족에게 확인해 보시면 됩니다.</textarea>
-<div class="row"><button id="save">대사 저장</button><button id="reset">처음부터</button></div>
+<label for="voiceSelect" style="margin-top:15px">상대방 목소리</label><div class="row"><select id="voiceSelect" aria-label="한국어 음성 선택" style="flex:2;min-width:170px;border:1px solid #d9dfe8;background:#fff;border-radius:13px;padding:10px;font:inherit"><option value="">기본 한국어 음성</option></select><button id="sampleVoice">목소리 들어보기</button></div><small>아이폰에 설치된 음성만 표시돼. 고품질 AI 음성은 별도 서비스가 필요해.</small><div class="row" style="margin-top:12px"><button id="save">대사 저장</button><button id="reset">처음부터</button></div>
 </section>
 <section><h2>4대사 교대 시험</h2><div class="steps" id="steps"><span></span><span></span><span></span><span></span></div>
 <div class="row"><button id="start" class="primary">▶ 대화 시작</button><button id="stop" disabled>■ 중지</button></div>
 <div class="card"><div id="speakerBadge">대기 중</div><div id="status">시작 버튼을 눌러 줘.</div><p id="currentLine" class="muted"></p></div>
 <div class="row"><button id="mic" disabled>🎙 내 대사 말하기</button><button id="manual" disabled>내 대사 완료 (수동)</button></div>
 <div class="card"><div class="muted">마이크가 인식한 말</div><div id="heard">—</div><small id="score"></small></div>
-<p class="hint" id="hint">상대역 대사가 끝나면 마이크 자동 시작을 시도해. 아이폰 브라우저의 제약으로 시작되지 않으면 ‘내 대사 말하기’를 직접 눌러 줘. 잘못 인식되면 수동 완료 버튼으로 시험할 수 있어.</p>
+<p class="hint" id="hint">2번은 대본과 음성 인식을 비교해. 마지막 4번은 실제 목소리가 들린 다음 약 1.4초 침묵하면 자동 종료해. 침묵만으로 대사의 정확성을 확인하는 것은 아니야. 마이크가 시작되지 않으면 버튼을 직접 눌러 줘.</p>
 <div class="row"><button id="repeat" disabled>현재 상대방 대사 다시 듣기</button><button id="next" disabled>다시 연습</button></div>
 <small id="count" style="margin-top:10px">완료된 4대사 연습: 0회</small>
 </section>
@@ -28,7 +28,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin:4px 
 const $=id=>document.getElementById(id), ids=['ai1','me1','ai2','me2'];
 const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
 const KEY='joon_actor_pair_trial_v2', LEGACY='joon_actor_pair_trial_v1';
-let phase='idle',step=-1,rec=null,token=0,heard='',finalSpeech='',delay=null,ttsWatch=null,count=0;
+let phase='idle',step=-1,rec=null,token=0,heard='',finalSpeech='',delay=null,ttsWatch=null,count=0,vadStream=null,vadContext=null,vadTimer=null,vadSpeaking=false;
 const set=(id,s)=>{$(id).textContent=s};
 const status=(s,who='상태')=>{set('status',s);set('speakerBadge',who)};
 const words=(x)=>String(x||'').normalize('NFC').toLowerCase().replace(/[^가-힣a-z0-9]/g,'');
@@ -40,6 +40,62 @@ function compare(a,b){
 }
 function clearTimers(){clearTimeout(delay);clearTimeout(ttsWatch);delay=null;ttsWatch=null}
 function stopRec(){if(!rec)return;const old=rec;rec=null;try{old.abort()}catch(e){}}
+function stopVAD(){
+ if(vadTimer){clearInterval(vadTimer);vadTimer=null}
+ if(vadStream){vadStream.getTracks().forEach(t=>t.stop());vadStream=null}
+ if(vadContext){vadContext.close().catch(()=>{});vadContext=null}
+ vadSpeaking=false;
+}
+async function listenLastLine(){
+ // 마지막 줄에서는 문자 일치율 대신 '실제 발화 뒤 침묵'을 시험한다.
+ const current=token,expectedStep=step;
+ if(!navigator.mediaDevices?.getUserMedia){phase='await';refresh();status('마이크 음성 활동 감지 미지원 · 수동 완료 사용','마이크');return}
+ stopRec();stopVAD();
+ phase='ready';refresh();status('마지막 대사를 말해 줘. 실제 목소리를 감지할게.','나 · 4 / 4');
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  if(current!==token||expectedStep!==step){stream.getTracks().forEach(t=>t.stop());return}
+  vadStream=stream;
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  vadContext=ctx;await ctx.resume();
+  const source=ctx.createMediaStreamSource(stream),analyser=ctx.createAnalyser();
+  analyser.fftSize=1024;source.connect(analyser);
+  const bytes=new Uint8Array(analyser.fftSize);
+  let activeMs=0,quietMs=0,baseline=0.006,startedAt=Date.now();
+  phase='listening';refresh();set('heard','목소리 감지 대기 중…');set('score','마지막 줄: 발화 후 침묵 감지 (대사 내용 비교 아님)');
+  vadTimer=setInterval(()=>{
+   if(current!==token||step!==expectedStep||phase!=='listening'){stopVAD();return}
+   analyser.getByteTimeDomainData(bytes);
+   let power=0;for(let i=0;i<bytes.length;i++){const v=(bytes[i]-128)/128;power+=v*v}
+   const rms=Math.sqrt(power/bytes.length);
+   if(!vadSpeaking && Date.now()-startedAt<1200)baseline=baseline*.93+rms*.07;
+   const threshold=Math.max(.018,baseline*2.7);
+   if(rms>threshold){activeMs+=70;quietMs=0}
+   else if(vadSpeaking)quietMs+=70;
+   if(!vadSpeaking&&activeMs>=420){vadSpeaking=true;set('heard','목소리가 감지됐어. 말이 끝날 때까지 듣고 있어…');status('말씀 중 · 마지막 대사','나 · 4 / 4')}
+   if(vadSpeaking&&quietMs>=1400){
+    set('heard','발화 감지 후 약 1.4초 침묵');
+    set('score','음성 활동으로 종료 판단 · 대사 정확도는 확인하지 않음');
+    stopVAD();finishMine(false);
+   }
+  },70);
+ }catch(e){
+  stopVAD();if(current!==token)return;
+  phase='await';refresh();status('마이크 접근 실패 ('+(e.name||'오류')+') · 마이크 버튼으로 다시 시도하거나 수동 완료','마이크');
+ }
+}
+function voices(){
+ const select=$('voiceSelect'),previous=select.value;
+ const list=window.speechSynthesis?.getVoices().filter(v=>/^ko(?:-|_)/i.test(v.lang))||[];
+ select.replaceChildren(new Option('기본 한국어 음성',''));
+ list.forEach(v=>select.add(new Option(v.name+(v.localService?' · 기기':' · 온라인'),v.voiceURI)));
+ if(list.some(v=>v.voiceURI===previous))select.value=previous;
+}
+function chooseVoice(u){
+ const name=$('voiceSelect').value;
+ const v=window.speechSynthesis.getVoices().find(v=>v.voiceURI===name);
+ if(v)u.voice=v;
+}
 function refresh(){
  $('stop').disabled=phase==='idle';
  $('start').disabled=!['idle','done'].includes(phase);
@@ -50,16 +106,16 @@ function refresh(){
  [...$('steps').children].forEach((n,i)=>{n.className=i<step?'done':i===step?'active':''});
 }
 function stop(){
- token++;stopRec();clearTimers();window.speechSynthesis?.cancel();phase='idle';step=-1;refresh();
+ token++;stopRec();stopVAD();clearTimers();window.speechSynthesis?.cancel();phase='idle';step=-1;refresh();
  status('중지됨','대기');set('currentLine','');
 }
 function speakStep(){
  if(step!==0&&step!==2)return;
- stopRec();clearTimers();const current=token;
+ stopRec();stopVAD();clearTimers();const current=token;
  if(!('speechSynthesis'in window)){phase='await';refresh();status('음성 출력 지원 안 됨','오류');return}
  const line=$(ids[step]).value.trim();
  phase='speaking';refresh();status('상대방이 말하고 있어','상대방 · '+(step+1)+' / 4');set('currentLine',line);
- window.speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(line);utter.lang='ko-KR';utter.rate=.94;
+ window.speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(line);utter.lang='ko-KR';utter.rate=.98;utter.pitch=1;chooseVoice(utter);
  let settled=false;
  utter.onend=()=>{if(settled||current!==token||phase!=='speaking')return;settled=true;clearTimers();step++;phase='ready';refresh();status('내 차례야. 마이크를 시작할게.','나 · '+(step+1)+' / 4');set('currentLine',$(ids[step]).value);startMic()};
  utter.onerror=()=>{if(current!==token)return;settled=true;clearTimers();phase='await';refresh();status('상대방 음성 재생 실패 · 다시 듣기 가능','오류')};
@@ -68,7 +124,7 @@ function speakStep(){
 }
 function finishMine(manual){
  if((step!==1&&step!==3)||!['ready','listening','await'].includes(phase))return;
- stopRec();clearTimers();
+ stopRec();stopVAD();clearTimers();
  if(manual)set('score','수동 완료');
  if(step===1){step=2;phase='speaking';refresh();speakStep()}
  else {step=4;phase='done';refresh();count++;set('count','완료된 4대사 연습: '+count+'회');status('4개 대사 모두 완료!','완료');set('currentLine','상대방 → 나 → 상대방 → 나');}
@@ -76,6 +132,7 @@ function finishMine(manual){
 function startMic(){
  if(step!==1&&step!==3)return;
  if(!['ready','await'].includes(phase))return;
+ if(step===3){listenLastLine();return}
  if(!Recognition){phase='await';refresh();status('이 브라우저는 자동 음성 인식 미지원 · 수동 완료 사용','마이크 미지원');return}
  stopRec();clearTimers();heard='';finalSpeech='';set('heard','듣는 중…');set('score','');
  const current=token,recognizedStep=step,r=new Recognition();rec=r;
@@ -126,10 +183,19 @@ try{
 }catch(e){}
 $('start').onclick=begin;$('stop').onclick=stop;$('reset').onclick=()=>{stop();status('초기화 완료. 다시 시작할 수 있어.','대기')};
 $('save').onclick=save;$('manual').onclick=()=>finishMine(true);
-$('mic').onclick=()=>{if(phase==='listening'){stopRec();phase='await';refresh();status('마이크 일시 중단 · 다시 말하기 또는 수동 완료','내 차례')}else startMic()};
-$('repeat').onclick=()=>{if(step!==0&&step!==2)return;token++;stopRec();clearTimers();window.speechSynthesis?.cancel();speakStep()};
+$('mic').onclick=()=>{if(phase==='listening'){stopRec();stopVAD();phase='await';refresh();status('마이크 일시 중단 · 다시 말하기 또는 수동 완료','내 차례')}else startMic()};
+$('repeat').onclick=()=>{if(step!==0&&step!==2)return;token++;stopRec();stopVAD();clearTimers();window.speechSynthesis?.cancel();speakStep()};
 $('next').onclick=begin;
-window.addEventListener('pagehide',()=>{stopRec();clearTimers();window.speechSynthesis?.cancel()});
+$('sampleVoice').onclick=()=>{
+ if(!window.speechSynthesis)return;
+ window.speechSynthesis.cancel();
+ const s=new SpeechSynthesisUtterance('어젯밤 어디 있었습니까?');
+ s.lang='ko-KR';s.rate=.98;chooseVoice(s);window.speechSynthesis.speak(s);
+};
+$('voiceSelect').onchange=()=>{try{localStorage.setItem('joon_actor_voice_preference',$('voiceSelect').value)}catch(e){}};
+voices();window.speechSynthesis?.addEventListener?.('voiceschanged',voices);
+setTimeout(()=>{voices();const saved=localStorage.getItem('joon_actor_voice_preference');if([...$('voiceSelect').options].some(o=>o.value===saved))$('voiceSelect').value=saved;},400);
+window.addEventListener('pagehide',()=>{stopRec();stopVAD();clearTimers();window.speechSynthesis?.cancel()});
 refresh();
 if(!Recognition)set('hint','이 브라우저에서는 음성 인식이 지원되지 않아. 상대방 대사 재생과 수동 완료로 4단계 흐름을 시험할 수 있어.');
 })();
