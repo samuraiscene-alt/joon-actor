@@ -11,24 +11,24 @@
 #ocrPanel small{color:#697482}#ocrAnalysis{white-space:pre-wrap;line-height:1.65;font-size:14px}
 #ocrPanel .ocrHint{font-size:13px;color:#714e14;background:#fff8e8;padding:10px;border-radius:10px}
 </style></head>
-<body><main><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.2.0</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
+<body><main><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.2.1</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
 <section><h2>내 대본</h2><p class="muted">대본은 브라우저에만 저장돼. 서버로 업로드하지 않아.</p><input id="title" aria-label="대본 제목" placeholder="대본 제목"><div class="actions"><label class="upload">TXT / OCR JSON 열기<input id="import" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="save" class="primary">기기에 저장</button><button id="export">TXT 백업</button></div><label class="upload" style="margin-top:8px">PDF 불러오기<input id="pdfImport" type="file" accept="application/pdf,.pdf"></label><p class="stat" id="status">대본 없음</p><p class="stat">대본은 브라우저에서만 열립니다. PDF 이미지 속 글자는 아직 자동 OCR을 지원하지 않습니다.</p><div id="pdfPreview"></div></section>
 <section><h2>대본 편집</h2><textarea id="script" placeholder="여기에 대본을 붙여넣거나 TXT 파일을 열어줘."></textarea><div class="actions"><button id="speak">선택 문장 읽기</button><button id="stop">음성 정지</button></div></section>
 <section><h2>리딩 설정</h2><div class="split"><select id="mode" aria-label="연기 모드"><option>대본 그대로</option><option>자연스러운 연기 (개발 예정)</option></select><select id="rate" aria-label="읽기 속도"><option value="0.85">느리게</option><option value="1" selected>보통</option><option value="1.15">빠르게</option></select></div><p class="warning">실시간 마이크 대화, 배역 자동 분리, AI 감정 연기는 아직 연결되지 않았어. 현재는 대본 입력·저장 및 선택 문장 읽기 테스트 버전이야.</p></section>
 <section id="ocrPanel">
-<h2>대본 자동 판독 · v0.2.0</h2>
+<h2>대본 자동 판독 · v0.2.1</h2>
 <p class="ocrHint">스캔 PDF 한글 OCR은 오탈자가 발생할 수 있어. 원본 화면과 인식 결과를 비교하고 교정한 뒤 저장해 줘. OCR은 이 아이폰에서 처리하며, 첫 실행은 언어 모델 다운로드가 필요해. PDF 원본은 서버에 전송하지 않아.</p>
 <div class="ocrRow"><label for="ocrPage">원본 페이지</label><select id="ocrPage"><option value="1">1페이지</option></select><small id="ocrCount">PDF 미선택</small></div>
 <div id="ocrCanvasWrap"><p class="muted">PDF를 불러오면 원본 페이지가 표시돼.</p></div>
 <div class="ocrActions">
-<button id="ocrOne" class="primary" disabled>현재 페이지 판독</button>
+<button id="ocrOne" class="primary" disabled>현재 페이지 판독</button><button id="ocrCompare" disabled>한글 우선 재판독</button>
 <button id="ocrAll" disabled>전체 페이지 순차 판독</button>
 <button id="ocrStop" disabled>중단</button>
 </div>
 <div id="ocrProgress"><div id="ocrFill"></div></div>
 <p class="muted" id="ocrStatus" role="status">PDF를 먼저 불러와 줘.</p>
 <div class="ocrRow"><strong>OCR 결과 · 직접 교정</strong><small id="ocrSaved">미저장</small></div>
-<textarea id="ocrText" spellcheck="false" placeholder="현재 페이지의 인식 결과가 표시돼. 직접 수정할 수 있어."></textarea>
+<textarea id="ocrText" spellcheck="false" placeholder="현재 페이지의 인식 결과가 표시돼. 직접 수정할 수 있어."></textarea><details><summary>재판독 결과 비교 (원래 인식 결과 보존)</summary><textarea id="ocrAlternative" spellcheck="false" readonly placeholder="재판독 결과가 여기에 표시돼."></textarea><button id="ocrApply">재판독 결과 적용</button></details>
 <div class="ocrActions">
 <button id="ocrSave" class="primary">이 페이지 저장</button>
 <button id="ocrAnalyze">대사 · 지문 후보 구분</button>
@@ -36,7 +36,7 @@
 <button id="ocrJson">전체 JSON 백업</button>
 </div>
 <div id="ocrAnalysis" class="muted">분석 결과는 후보일 뿐 확정된 등장인물·감정 정보가 아니야.</div>
-<p class="muted">연습용 실시간 AI 연기는 다음 개발 단계야. 현재는 판독 정확도 검증 단계야.</p>
+<p class="ocrHint">한글 우선 판독은 영문이 적은 대본에서 도움이 될 수 있지만 모든 오류를 고치지는 못해. 재판독은 기존 저장 결과를 덮어쓰지 않으며, 직접 비교해 적용해야 해.</p><p class="muted">연습용 실시간 AI 연기는 다음 개발 단계야. 현재는 판독 정확도 검증 단계야.</p>
 </section></main><script>
 const $=id=>document.getElementById(id),KEY='joon_actor_local_v1';
 function update(){const t=$('script').value;$('status').textContent=t.length.toLocaleString()+'자 · 로컬 저장 상태는 저장 버튼으로 확인'}
@@ -55,24 +55,44 @@ picker.addEventListener('change',e=>{const file=e.target.files[0];if(!file)retur
 </script><script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),status=s=>$('ocrStatus').textContent=s;
-let pdf=null,worker=null,current=1,records={},running=false,stop=false,rawFile=null;
+let pdf=null,worker=null,workerKor=null,current=1,records={},running=false,stop=false,rawFile=null,alternative='';
 const KEY='joon_actor_ocr_v020',pdfWorkerUrl='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 function loadScript(src){return new Promise((resolve,reject)=>{let s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(Error('라이브러리를 불러올 수 없어. 인터넷 연결을 확인해 줘.'));document.head.append(s)})}
 async function ensurePdf(){if(!window.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc=pdfWorkerUrl}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify({name:rawFile?.name||'',pages:records,savedAt:new Date().toISOString()}));return true}catch(e){status('저장 공간 부족 또는 기기 저장 실패: '+e.message);return false}}
 function flush(){if(pdf){records[current]=$('ocrText').value;saveLocal()}}
-function setPageText(){let v=records[current]||'';$('ocrText').value=v;$('ocrSaved').textContent=v?'저장된 결과 있음':'판독 전';$('ocrPage').value=String(current);$('ocrCount').textContent=current+' / '+(pdf?.numPages||0)}
+function setPageText(){alternative='';$('ocrAlternative').value='';let v=records[current]||'';$('ocrText').value=v;$('ocrSaved').textContent=v?'저장된 결과 있음':'판독 전';$('ocrPage').value=String(current);$('ocrCount').textContent=current+' / '+(pdf?.numPages||0)}
 async function renderPage(){if(!pdf)return;try{const page=await pdf.getPage(current),v=page.getViewport({scale:1.5}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await page.render({canvasContext:c.getContext('2d'),viewport:v}).promise;$('ocrCanvasWrap').replaceChildren(c)}catch(e){status('PDF 페이지 표시 오류: '+e.message)}}
 async function gotoPage(p){if(!pdf)return;flush();current=Math.min(pdf.numPages,Math.max(1,p));setPageText();await renderPage()}
-async function pdfLoaded(file){if(!file)return;try{status('PDF 분석 준비 중...');rawFile=file;await ensurePdf();if(pdf){try{await pdf.destroy()}catch(e){}}pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;records={};current=1;const cached=JSON.parse(localStorage.getItem(KEY)||'null');if(cached?.name===file.name&&cached?.pages)records=cached.pages;$('ocrPage').replaceChildren(...Array.from({length:pdf.numPages},(_,i)=>{const o=document.createElement('option');o.value=String(i+1);o.textContent=(i+1)+'페이지';return o}));$('ocrOne').disabled=false;$('ocrAll').disabled=false;setPageText();await renderPage();status(pdf.numPages+'페이지 PDF 연결 완료 · 판독 버튼을 누르면 OCR 시작')}catch(e){status('PDF OCR 준비 실패: '+e.message)}}
+async function pdfLoaded(file){if(!file)return;try{status('PDF 분석 준비 중...');rawFile=file;await ensurePdf();if(pdf){try{await pdf.destroy()}catch(e){}}pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;records={};current=1;const cached=JSON.parse(localStorage.getItem(KEY)||'null');if(cached?.name===file.name&&cached?.pages)records=cached.pages;$('ocrPage').replaceChildren(...Array.from({length:pdf.numPages},(_,i)=>{const o=document.createElement('option');o.value=String(i+1);o.textContent=(i+1)+'페이지';return o}));$('ocrOne').disabled=false;$('ocrAll').disabled=false;$('ocrCompare').disabled=false;setPageText();await renderPage();status(pdf.numPages+'페이지 PDF 연결 완료 · 판독 버튼을 누르면 OCR 시작')}catch(e){status('PDF OCR 준비 실패: '+e.message)}}
 $('pdfImport').addEventListener('change',async e=>{const file=e.target.files[0];if(file)await pdfLoaded(file)},true);
 $('ocrPage').onchange=()=>gotoPage(Number($('ocrPage').value));
 $('ocrSave').onclick=()=>{if(!pdf){status('PDF부터 선택해 줘.');return}flush();$('ocrSaved').textContent='✓ 이 기기에 저장';status(current+'페이지 교정 결과 저장 완료')};
 $('ocrText').oninput=()=>{$('ocrSaved').textContent='수정 중 · 저장 필요'};
-async function ensureOCR(){if(worker)return worker;if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');status('한글 OCR 언어 모델 준비 중 (첫 실행 시 다운로드)...');worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text')status('OCR 인식 중 '+Math.round((m.progress||0)*100)+'%')}});return worker}
-async function extract(n){const page=await pdf.getPage(n);const text=await page.getTextContent();const joined=text.items.map(x=>x.str).join(' ').trim();if(joined.length>100)return {result:joined,method:'PDF 텍스트'};await ensureOCR();const v=page.getViewport({scale:2});const c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await page.render({canvasContext:c.getContext('2d'),viewport:v}).promise;const o=await worker.recognize(c);c.width=c.height=0;return {result:o.data.text||'',method:'OCR'};}
-async function run(all){if(!pdf||running)return;running=true;stop=false;$('ocrStop').disabled=false;$('ocrOne').disabled=true;$('ocrAll').disabled=true;if(all)flush();const start=all?1:current,end=all?pdf.numPages:current;let done=0;try{for(let n=start;n<=end;n++){if(stop)break;if(all&&records[n]?.trim()){done++;$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';continue}status(n+' / '+pdf.numPages+'페이지 판독 중...');const o=await extract(n);records[n]=o.result;done++;if(!saveLocal())break;if(n===current){setPageText()}$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';status(n+'페이지 '+o.method+' 완료 · '+o.result.length+'자 (검토 필요)');await new Promise(r=>setTimeout(r,20))}status(stop?'판독 중단됨 · 완료 페이지 저장됨':done+'페이지 판독 완료 · 원문 대조 필요')}catch(e){status('판독 오류: '+e.message+' · 완료 페이지는 저장됨')}finally{running=false;$('ocrStop').disabled=true;$('ocrOne').disabled=false;$('ocrAll').disabled=false;setPageText()}}
-$('ocrOne').onclick=()=>{flush();records[current]='';run(false)};$('ocrAll').onclick=()=>run(true);$('ocrStop').onclick=()=>{stop=true;status('현재 페이지 판독이 끝나면 중단할게.')};
+async function ensureOCR(lang='kor+eng'){if(lang==='kor'&&workerKor)return workerKor;if(lang!=='kor'&&worker)return worker;if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');status('한글 OCR 언어 모델 준비 중 (첫 실행 시 다운로드)...');const w=await Tesseract.createWorker(lang,1,{logger:m=>{if(m.status==='recognizing text')status('OCR 인식 중 '+Math.round((m.progress||0)*100)+'%')}});await w.setParameters({preserve_interword_spaces:'1',tessedit_pageseg_mode:'3'});if(lang==='kor')workerKor=w;else worker=w;return w}
+async function extract(n,lang='kor+eng'){
+ const page=await pdf.getPage(n),text=await page.getTextContent();
+ const joined=text.items.map(x=>x.str).join(' ').trim();
+ if(joined.length>100 && lang!=='kor')return {result:joined,method:'PDF 텍스트'};
+ const w=await ensureOCR(lang);
+ const vp=page.getViewport({scale:2.8});
+ const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
+ const ctx=c.getContext('2d',{willReadFrequently:true});
+ await page.render({canvasContext:ctx,viewport:vp}).promise;
+ const img=ctx.getImageData(0,0,c.width,c.height),px=img.data;
+ // 회색 노이즈를 줄이고 글자 대비를 높이되 픽셀 위치는 유지한다.
+ for(let i=0;i<px.length;i+=4){
+   let g=0.299*px[i]+0.587*px[i+1]+0.114*px[i+2];
+   let v=g<155?Math.max(0,g*0.78):g>225?255:Math.min(255,g*1.13);
+   px[i]=px[i+1]=px[i+2]=v;
+ }
+ ctx.putImageData(img,0,0);
+ try{const o=await w.recognize(c);return {result:o.data.text||'',method:lang==='kor'?'한글 우선 OCR':'고대비 OCR'}}finally{c.width=c.height=0}
+}
+async function run(all){if(!pdf||running)return;running=true;stop=false;$('ocrStop').disabled=false;$('ocrOne').disabled=true;$('ocrAll').disabled=true;$('ocrCompare').disabled=true;if(all)flush();const start=all?1:current,end=all?pdf.numPages:current;let done=0;try{for(let n=start;n<=end;n++){if(stop)break;if(all&&records[n]?.trim()){done++;$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';continue}status(n+' / '+pdf.numPages+'페이지 판독 중...');const o=await extract(n);records[n]=o.result;done++;if(!saveLocal())break;if(n===current){setPageText()}$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';status(n+'페이지 '+o.method+' 완료 · '+o.result.length+'자 (검토 필요)');await new Promise(r=>setTimeout(r,20))}status(stop?'판독 중단됨 · 완료 페이지 저장됨':done+'페이지 판독 완료 · 원문 대조 필요')}catch(e){status('판독 오류: '+e.message+' · 완료 페이지는 저장됨')}finally{running=false;$('ocrStop').disabled=true;$('ocrOne').disabled=false;$('ocrAll').disabled=false;setPageText()}}
+$('ocrOne').onclick=async()=>{if(!pdf||running)return;flush();if(records[current]?.trim()&&!confirm('기존 판독 결과를 다시 인식할까? 수정한 내용을 덮어쓸 수 있어. 먼저 JSON 백업을 권장해.'))return;records[current]='';await run(false)};$('ocrAll').onclick=()=>run(true);
+$('ocrCompare').onclick=async()=>{if(!pdf||running)return;flush();running=true;$('ocrCompare').disabled=true;try{status(current+'페이지 한글 우선 재판독 중...');const o=await extract(current,'kor');alternative=o.result;$('ocrAlternative').value=alternative;status('한글 우선 결과 준비됨 · 원본과 기존 판독 결과를 비교한 뒤 적용해 줘.')}catch(e){status('재판독 오류: '+e.message)}finally{running=false;$('ocrCompare').disabled=false}};
+$('ocrApply').onclick=()=>{if(!alternative){status('재판독 결과가 없어.');return}if(!confirm('현재 페이지의 편집 내용이 재판독 결과로 교체돼. 진행할까?'))return;records[current]=alternative;$('ocrText').value=alternative;saveLocal();$('ocrSaved').textContent='✓ 재판독 결과 저장';status('재판독 결과 적용 완료 · 원본 대조 필요')};$('ocrStop').onclick=()=>{stop=true;status('현재 페이지 판독이 끝나면 중단할게.')};
 function download(name,body,type){let b=new Blob([body],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 $('ocrExport').onclick=()=>{flush();download('JOON_ACTOR_대본_판독.txt',Object.entries(records).sort((a,b)=>+a[0]-+b[0]).map(([n,v])=>'=== '+n+'페이지 ===\n'+v).join('\n\n'),'text/plain;charset=utf-8')};
 $('ocrJson').onclick=()=>{flush();download('JOON_ACTOR_OCR_백업.json',JSON.stringify({version:2,title:rawFile?.name||'대본',pages:Array.from({length:pdf?.numPages||0},(_,i)=>records[i+1]||''),reviewNeeded:true},null,2),'application/json')};
