@@ -7,25 +7,8 @@ function save(){try{localStorage.setItem(storeKey,JSON.stringify(data));return t
 function load(){try{const x=JSON.parse(localStorage.getItem(storeKey)||'null');if(x?.scripts)data=x}catch(e){}}
 function active(){return data.scripts.find(s=>s.id===data.active)||null}
 const escapeHTML=x=>String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function scenesAndLines(text){
- const rows=text.split(/\r?\n/),out=[];let scene='';let last=null;
- for(const [index,raw] of rows.entries()){
-  const t=raw.trim();if(!t)continue;
-  if(/^(S\s*#\s*\d+|SCENE\s*\d+|씬\s*\d+)/i.test(t)){scene=t;out.push({type:'scene',speaker:'',text:t,scene,checked:false,line:index+1});last=null;continue}
-  let m=t.match(/^([^:：]{1,20})\s*[:：]\s*(.+)$/);
-  if(!m)m=raw.match(/^\s*([가-힣A-Za-z0-9() ]{2,18})\s{3,}(.+)$/);
-  if(m&& /^[가-힣A-Za-z0-9()\s]{1,18}$/.test(m[1]) && m[1].trim().length<=18){
-   last={type:'dialogue',speaker:m[1].trim(),text:m[2].trim(),scene,checked:false,line:index+1};
-   out.push(last);continue;
-  }
-  if(last?.type==='dialogue'&&!/^[\-•]/.test(t)&&!/^(?:그때|한편|화면|카메라)/.test(t)){
-   // 이어지는 줄로 볼 수 있으나 확신할 수 없으므로 자동 연결 대신 확인 대상
-   out.push({type:'unknown',speaker:'',text:t,scene,checked:false,line:index+1});last=null;continue;
-  }
-  out.push({type:'action',speaker:'',text:t,scene,checked:false,line:index+1});last=null;
- }
- return out;
-}
+function scenesAndLines(text){return window.JoonScriptParser.parse(text)}
+
 function view(to){
  stage=to;['home','editor','roles','practice','settings'].forEach(x=>{$('simple-'+x).hidden=x!==to});
  $('simpleBack').hidden=to==='home';$('simpleSettings').hidden=to==='settings';
@@ -57,16 +40,16 @@ function drawItems(){
  const box=$('simpleLines');box.replaceChildren();
  items.forEach((o,i)=>{
   const wrap=document.createElement('div');wrap.className='lineCard';
-  const head=document.createElement('div');head.className='lineHead';head.textContent=(i+1)+' · 원문 '+o.line+'행';
+  const head=document.createElement('div');head.className='lineHead';head.textContent=(i+1)+' · '+({dialogue:'대사',action:'지문',scene:'장면',unknown:'구분 불확실'}[o.type]||'검토')+' · 원문 '+o.line+'행'+(o.confidence==='high'?' · 형식 인식':' · 검토 필요');
   const sel=document.createElement('select');[['dialogue','대사'],['action','지문'],['scene','장면'],['unknown','구분 안 됨']].forEach(([v,t])=>sel.add(new Option(t,v)));sel.value=o.type;
   const who=document.createElement('input');who.placeholder='배역 이름';who.value=o.speaker||'';who.hidden=o.type!=='dialogue';
-  const txt=document.createElement('textarea');txt.value=o.text;txt.rows=2;
+  const txt=document.createElement('textarea');txt.value=o.text;txt.rows=2;const direction=document.createElement('div');direction.className='lineHead';direction.textContent=o.direction?'지문/감정: '+o.direction:'';
   const check=document.createElement('label');check.className='checkLabel';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!o.checked;check.append(cb,document.createTextNode(' 원문 확인 완료'));
   sel.onchange=()=>{o.type=sel.value;o.checked=false;who.hidden=o.type!=='dialogue';cb.checked=false;persistEditor();refreshRoles()};
   who.onchange=()=>{o.speaker=who.value.trim();o.checked=false;cb.checked=false;persistEditor();refreshRoles()};
   txt.onchange=()=>{o.text=txt.value;o.checked=false;cb.checked=false;persistEditor()};
   cb.onchange=()=>{if(cb.checked && (!o.text.trim()||(o.type==='dialogue'&&!o.speaker.trim()))){cb.checked=false;setStatus('대사와 배역 이름을 입력해야 검증할 수 있어.');return}o.checked=cb.checked;persistEditor();refreshRoles()};
-  wrap.append(head,sel,who,txt,check);box.append(wrap);
+  wrap.append(head,sel,who,direction,txt,check);box.append(wrap);
  });
  refreshRoles();
 }
@@ -75,13 +58,14 @@ function refreshRoles(){
  const sel=$('simpleRole');sel.replaceChildren(new Option('내 배역 선택',''));roles.forEach(r=>sel.add(new Option(r,r)));
  if(roles.includes(myRole))sel.value=myRole;
  const confirmed=items.filter(x=>x.type==='dialogue'&&x.checked&&x.speaker&&x.text.trim());
- $('simpleCount').textContent='대사 '+items.filter(x=>x.type==='dialogue').length+'개 · 확인된 대사 '+confirmed.length+'개';
+ $('simpleCount').textContent='대사 '+items.filter(x=>x.type==='dialogue').length+'개 · 지문 '+items.filter(x=>x.type==='action').length+'개 · 미분류 '+items.filter(x=>x.type==='unknown').length+'개 · 확인된 대사 '+confirmed.length+'개';
  $('simpleRun').disabled=!(myRole&&confirmed.some(x=>x.speaker!==myRole));
 }
 function analyze(){
  if(!$('simpleText').value.trim()){setStatus('대본을 붙여넣어 줘.');return}
+ if(items.some(x=>x.checked)&&!confirm('기존 검증 결과가 있어. 새로 분석하면 검증 표시가 초기화돼. 다시 분석할까?'))return;
  items=scenesAndLines($('simpleText').value);persistEditor();drawItems();view('roles');
- setStatus('배역과 지문이 올바른지 확인하고 체크해 줘. 자동 분석은 확정 결과가 아니야.');
+ setStatus('대본 형식에 따라 배역·대사·지문을 구분했어. 미분류는 직접 확인해 줘.');
 }
 function stopVoice(){voiceRunning=false;if('speechSynthesis'in window)speechSynthesis.cancel();$('simpleStop').disabled=true}
 function playPreview(){
