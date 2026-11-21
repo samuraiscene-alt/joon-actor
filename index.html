@@ -41,7 +41,7 @@ body.advanced #simpleApp{display:none!important}
 #simpleApp #simpleCurrent{font-size:19px;line-height:1.8;white-space:pre-wrap}
 </style></head>
 <body><main><section id="simpleApp">
-<div class="simpleTop"><div style="display:flex;align-items:center;gap:10px"><button id="simpleBack" aria-label="뒤로" style="background:transparent;padding:5px">‹</button><div><h1>JOON ACTOR</h1><div class="simpleSub">AI 배우 대본 연습 · v0.3.0</div></div></div><button id="simpleSettings" aria-label="설정" style="background:#eceff5;color:#27374a">⚙</button></div>
+<div class="simpleTop"><div style="display:flex;align-items:center;gap:10px"><button id="simpleBack" aria-label="뒤로" style="background:transparent;padding:5px">‹</button><div><h1>JOON ACTOR</h1><div class="simpleSub">AI 배우 대본 연습 · v0.3.1</div></div></div><button id="simpleSettings" aria-label="설정" style="background:#eceff5;color:#27374a">⚙</button></div>
 <div id="simple-home">
 <div class="simpleCard"><h2>내 대본</h2><div id="simpleLibrary" class="simpleSub"></div><button id="simpleNew" class="simplePrimary">＋ 대본 추가</button></div>
 <div class="simpleCard"><h2>사용 방법</h2><p class="simpleSub">PDF에서 필요한 장면의 대사와 지문만 복사해 붙여넣어. 배역과 대사를 확인한 후 상대역 음성을 연습할 수 있어.</p></div>
@@ -66,7 +66,7 @@ body.advanced #simpleApp{display:none!important}
 <div class="simpleCard"><h2>설정</h2><p class="simpleSub">이전 버전의 대본과 고급 OCR 도구를 그대로 보존했어.</p>
 <div class="simpleActions"><button id="simpleRestoreLegacy">이전 대본 가져오기</button><button id="simpleAdvanced">고급 도구 열기</button></div><button id="simpleSettingsBack" style="margin-top:10px">홈으로</button></div>
 </div>
-<p id="simpleStatus" class="simpleSub" role="status" style="text-align:center;margin:14px 5px"></p></section><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.3.0</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
+<p id="simpleStatus" class="simpleSub" role="status" style="text-align:center;margin:14px 5px"></p></section><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.3.1</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
 <section><h2>내 대본</h2><p class="muted">대본은 브라우저에만 저장돼. 서버로 업로드하지 않아.</p><input id="title" aria-label="대본 제목" placeholder="대본 제목"><div class="actions"><label class="upload">TXT / OCR JSON 열기<input id="import" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="save" class="primary">기기에 저장</button><button id="export">TXT 백업</button></div><div style="margin:12px 0 10px;padding:13px;border-radius:14px;background:#f1f5ff">
 <strong>원본 문자 우선 불러오기</strong><p class="muted" style="margin:6px 0">HWPX 및 글자 선택이 가능한 PDF를 OCR 없이 직접 읽어. 구형 HWP는 HWPX로 변환해야 해.</p>
 <label class="upload">HWPX / PDF 원문 가져오기<input id="structuredImport" type="file" accept=".hwpx,.hwp,.pdf,application/pdf"></label>
@@ -76,7 +76,7 @@ body.advanced #simpleApp{display:none!important}
 <section><h2>대본 편집</h2><textarea id="script" placeholder="여기에 대본을 붙여넣거나 TXT 파일을 열어줘."></textarea><div class="actions"><button id="speak">선택 문장 읽기</button><button id="stop">음성 정지</button></div></section>
 <section><h2>리딩 설정</h2><div class="split"><select id="mode" aria-label="연기 모드"><option>대본 그대로</option><option>자연스러운 연기 (개발 예정)</option></select><select id="rate" aria-label="읽기 속도"><option value="0.85">느리게</option><option value="1" selected>보통</option><option value="1.15">빠르게</option></select></div><p class="warning">실시간 마이크 대화, 배역 자동 분리, AI 감정 연기는 아직 연결되지 않았어. 현재는 대본 입력·저장 및 선택 문장 읽기 테스트 버전이야.</p></section>
 <section id="ocrPanel">
-<h2>스캔형 PDF OCR · v0.3.0</h2>
+<h2>스캔형 PDF OCR · v0.3.1</h2>
 <p class="ocrHint">스캔 PDF 한글 OCR은 오탈자가 발생할 수 있어. 원본 화면과 인식 결과를 비교하고 교정한 뒤 저장해 줘. OCR은 이 아이폰에서 처리하며, 첫 실행은 언어 모델 다운로드가 필요해. PDF 원본은 서버에 전송하지 않아.</p>
 <div class="ocrRow"><label for="ocrPage">원본 페이지</label><select id="ocrPage"><option value="1">1페이지</option></select><small id="ocrCount">PDF 미선택</small></div>
 <div id="ocrCanvasWrap"><p class="muted">PDF를 불러오면 원본 페이지가 표시돼.</p></div>
@@ -97,13 +97,13 @@ body.advanced #simpleApp{display:none!important}
 </div>
 <div id="ocrAnalysis" class="muted">분석 결과는 후보일 뿐 확정된 등장인물·감정 정보가 아니야.</div>
 <p class="ocrHint">한글 우선 판독은 영문이 적은 대본에서 도움이 될 수 있지만 모든 오류를 고치지는 못해. 재판독은 기존 저장 결과를 덮어쓰지 않으며, 직접 비교해 적용해야 해.</p><p class="muted">연습용 실시간 AI 연기는 다음 개발 단계야. 현재는 판독 정확도 검증 단계야.</p>
-</section><section id="structurePanel"><h2>대본 구조 분석 · v0.3.0</h2>
+</section><section id="structurePanel"><h2>대본 구조 분석 · v0.3.1</h2>
 <p class="muted">대본 편집창에 추출된 원문을 기준으로 장면·배역·대사·지문 후보를 나눠. OCR 오인식은 자동으로 고치지 않고 검토 대상으로 표시해.</p>
 <div class="actions"><button id="structureRun" class="primary">대본 구조 분석</button><button id="structureExport">분석 JSON 백업</button></div>
 <p class="stat" id="structureStatus">분석 전</p>
 <div id="structurePreview" style="max-height:420px;overflow:auto;background:#f8f9fc;border-radius:12px;padding:10px;font-size:14px"></div>
 <p class="warning">이 결과는 자동 분류 후보야. 실제 대본의 배역·지문 정확성을 확인하기 전에는 AI 상대역 연기에 사용하지 않아.</p></section><section id="queuePanel">
-<h2>검증 대사 순서 · v0.3.0</h2>
+<h2>검증 대사 순서 · v0.3.1</h2>
 <p class="muted">앞에서 생성한 대본 구조 분석을 불러와. 원본 대사를 확인해 배역·지문을 고친 뒤, 확인된 항목만 검증 완료 표시할 수 있어.</p>
 <div class="actions"><button id="queueBuild" class="primary">분석 결과로 목록 만들기</button><button id="queueExport">검증 대사 JSON 백업</button><label class="upload">백업 복원<input id="queueImport" type="file" accept=".json,application/json"></label></div>
 <p id="queueStatus" class="stat" role="status">분석 결과 불러오기 전</p>
@@ -182,4 +182,4 @@ $('ocrExport').onclick=()=>{flush();download('JOON_ACTOR_대본_판독.txt',Obje
 $('ocrJson').onclick=()=>{flush();download('JOON_ACTOR_OCR_백업.json',JSON.stringify({version:2,title:rawFile?.name||'대본',pages:Array.from({length:pdf?.numPages||0},(_,i)=>records[i+1]||''),reviewNeeded:true},null,2),'application/json')};
 $('ocrAnalyze').onclick=()=>{flush();const lines=$('ocrText').value.split(/\n/).map(x=>x.trim()).filter(Boolean);let scene=[],dialog=[],action=[];for(const s of lines){if(/^(S[#＃]?\s*\d+|SCENE\s*\d+)/i.test(s))scene.push(s);else if(/^([가-힣]{2,8}|MC|PD|\w{2,8})\s*[:：\t]\s*.+/.test(s))dialog.push(s);else action.push(s)}$('ocrAnalysis').textContent='장면 후보 '+scene.length+'줄 · 대사 후보 '+dialog.length+'줄 · 기타/지문 후보 '+action.length+'줄\n\n[장면]\n'+scene.slice(0,6).join('\n')+'\n\n[대사]\n'+dialog.slice(0,8).join('\n')+'\n\n주의: 스캔 OCR에서는 인물명과 들여쓰기가 손상되어 분류 오류가 많을 수 있어. 확정 전 직접 검토해야 해.'};
 })();
-</script><script src="./document-import.js"></script><script src="./script-structure.js"></script><script src="./dialogue-sequence.js"></script><script src="./simple-app.js"></script><button id="simpleReturn" class="primary" style="display:none;position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:100;border-radius:20px">간단 화면으로 돌아가기</button><script>const advToggle=new MutationObserver(()=>{document.getElementById("simpleReturn").style.display=document.body.classList.contains("advanced")?"block":"none"});advToggle.observe(document.body,{attributes:true,attributeFilter:["class"]});</script></body></html>
+</script><script src="./document-import.js"></script><script src="./script-structure.js"></script><script src="./dialogue-sequence.js"></script><script src="./script-parser-v2.js"></script><script src="./simple-app.js"></script><button id="simpleReturn" class="primary" style="display:none;position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:100;border-radius:20px">간단 화면으로 돌아가기</button><script>const advToggle=new MutationObserver(()=>{document.getElementById("simpleReturn").style.display=document.body.classList.contains("advanced")?"block":"none"});advToggle.observe(document.body,{attributes:true,attributeFilter:["class"]});</script></body></html>
