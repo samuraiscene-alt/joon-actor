@@ -1,185 +1,23 @@
-<!DOCTYPE html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f7fb"><link rel="manifest" href="./manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="JOON ACTOR"><link rel="apple-touch-icon" href="./icon.png"><link rel="icon" href="./icon.png"><title>JOON ACTOR · 대본 연습</title>
-<style>:root{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#161923;background:#f6f7fb}*{box-sizing:border-box}body{margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}main{max-width:700px;margin:auto;padding:18px 16px 60px}header{display:flex;align-items:center;justify-content:space-between;padding:16px 0}h1{font-size:26px;margin:0}h2{font-size:17px;margin:0 0 10px}.muted{color:#788194;font-size:13px}section{background:#fff;border:1px solid #edf0f4;border-radius:20px;padding:17px;margin-bottom:14px;box-shadow:0 4px 15px #2e375008}textarea,input,select{width:100%;border-radius:12px;border:1px solid #dce1e9;padding:12px;font:inherit;background:#fff}textarea{min-height:300px;line-height:1.6;resize:vertical}button,.upload{border:0;border-radius:12px;padding:12px 15px;font:inherit;font-weight:650;background:#eaf0ff;color:#1552be;cursor:pointer;display:inline-block}.primary{background:#1769ff;color:white}button:disabled{opacity:.5}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.stat{font-size:13px;color:#566171;margin:8px 0}.split{display:flex;gap:8px}.split>*{flex:1}.upload input{display:none}.warning{background:#fff8e9;padding:12px;border-radius:12px;font-size:13px;color:#785414}small{font-size:12px}</style><style>
-#ocrPanel textarea{min-height:220px}#ocrPanel .ocrActions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}#ocrPanel .ocrActions button{font-size:14px}
-#ocrPanel .ocrRow{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:10px 0}
-#ocrPanel .ocrRow select{flex:1;max-width:210px}
-#ocrCanvasWrap{background:#f2f3f6;border:1px solid #e1e4eb;border-radius:14px;max-height:50vh;overflow:auto;text-align:center}
-#ocrCanvasWrap canvas{display:block;max-width:100%;height:auto;margin:auto}
-#ocrProgress{background:#e9ecf4;height:8px;border-radius:999px;overflow:hidden;margin:10px 0}
-#ocrFill{background:#1769ff;height:100%;width:0%;transition:width .2s}
-#ocrPanel small{color:#697482}#ocrAnalysis{white-space:pre-wrap;line-height:1.65;font-size:14px}
-#ocrPanel .ocrHint{font-size:13px;color:#714e14;background:#fff8e8;padding:10px;border-radius:10px}
-</style><style>
-#queueList{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;padding:7px;background:#f6f8fc;border-radius:12px}
-#queueList .queueItem{background:white;border:1px solid #e2e7f0;color:#293648;text-align:left;font-weight:500;padding:10px}
-#queueList .queueItem.selected{border:2px solid #3675ef;background:#eaf1ff}
-#queuePanel label{display:block;color:#626d81;font-size:13px;font-weight:600;margin:10px 0 5px}
-#queuePanel textarea{min-height:115px}#queuePanel .twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-</style><style>
-body:not(.advanced) main>header,body:not(.advanced) main>section:not(#simpleApp){display:none!important}
-body.advanced #simpleApp{display:none!important}
-#simpleApp{background:transparent;border:0;box-shadow:none;padding:0;margin:0;display:block}
-#simpleApp [hidden]{display:none!important}
-#simpleApp .simpleTop{display:flex;align-items:center;justify-content:space-between;margin:8px 0 20px}
-#simpleApp .simpleTop h1{font-size:29px;letter-spacing:-1px;margin:0}
-#simpleApp .simpleCard{background:white;border:1px solid #ebedf3;border-radius:23px;padding:19px;margin-bottom:14px}
-#simpleApp .simpleCard h2{font-size:20px}
-#simpleApp .simplePrimary{background:#1769ff;color:white;border-radius:15px;width:100%;padding:16px;font-weight:750;font-size:16px}
-#simpleApp .simpleSub{font-size:14px;color:#7a8394;line-height:1.55}
-#simpleApp textarea{min-height:250px;font-size:16px;line-height:1.65;background:#fbfcfe}
-#simpleApp input,#simpleApp select{font-size:16px}
-#simpleApp .simpleActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-#simpleApp .simpleActions>button{flex:1}
-#simpleApp .scriptTile{display:block;width:100%;text-align:left;margin:7px 0;background:#f4f6fc;color:#202738}
-#simpleApp .lineCard{border:1px solid #e7eaf1;padding:12px;border-radius:15px;margin:9px 0}
-#simpleApp .lineCard textarea{min-height:75px;margin:8px 0}
-#simpleApp .lineCard select,#simpleApp .lineCard input{margin:6px 0}
-#simpleApp .lineHead{font-size:12px;color:#7b8497}
-#simpleApp .checkLabel{display:flex;align-items:center;gap:6px;font-size:14px;color:#4a5666}
-#simpleApp .checkLabel input{width:22px;height:22px}
-#simpleApp #simpleCurrent{font-size:19px;line-height:1.8;white-space:pre-wrap}
-</style></head>
-<body><main><section id="simpleApp">
-<div class="simpleTop"><div style="display:flex;align-items:center;gap:10px"><button id="simpleBack" aria-label="뒤로" style="background:transparent;padding:5px">‹</button><div><h1>JOON ACTOR</h1><div class="simpleSub">AI 배우 대본 연습 · v0.3.1</div></div></div><button id="simpleSettings" aria-label="설정" style="background:#eceff5;color:#27374a">⚙</button></div>
-<div id="simple-home">
-<div class="simpleCard"><h2>내 대본</h2><div id="simpleLibrary" class="simpleSub"></div><button id="simpleNew" class="simplePrimary">＋ 대본 추가</button></div>
-<div class="simpleCard"><h2>사용 방법</h2><p class="simpleSub">PDF에서 필요한 장면의 대사와 지문만 복사해 붙여넣어. 배역과 대사를 확인한 후 상대역 음성을 연습할 수 있어.</p></div>
-</div>
-<div id="simple-editor" hidden>
-<div class="simpleCard"><h2>대본 붙여넣기</h2><label for="simpleTitle" class="simpleSub">대본 제목</label><input id="simpleTitle" placeholder="대본 제목">
-<label for="simpleText" class="simpleSub" style="display:block;margin-top:14px">대사와 지문</label><textarea id="simpleText" placeholder="형사: (차갑게) 어젯밤 어디 있었습니까?&#10;&#10;용의자: (망설이며) 집에 있었습니다."></textarea>
-<div class="simpleActions"><button id="simpleSave">대본 저장</button><button id="simpleDelete" style="color:#b43245;background:#fff0f2">삭제</button></div></div>
-<button id="simpleAnalyze" class="simplePrimary">대본 분석하기</button>
-</div>
-<div id="simple-roles" hidden>
-<div class="simpleCard"><h2>배역 · 대사 확인</h2><p class="simpleSub">자동 분류는 오류가 있을 수 있어. 배역명·대사·지문을 확인하고 정확한 항목에만 체크해 줘.</p><p id="simpleCount" class="simpleSub"></p><div id="simpleLines"></div></div>
-<div class="simpleCard"><h2>연기 설정</h2><label for="simpleRole">내 배역</label><select id="simpleRole"><option value="">내 배역 선택</option></select><label for="simpleMode" style="display:block;margin-top:15px">연기 모드</label>
-<select id="simpleMode"><option value="exact">대본 그대로</option><option value="natural">자연스러운 연기 (개발 중)</option></select></div>
-<button id="simpleRun" class="simplePrimary" disabled>상대역 미리듣기</button>
-</div>
-<div id="simple-practice" hidden>
-<div class="simpleCard"><h2>상대역 리딩</h2><p class="simpleSub">지금은 검증된 대사를 음성으로 읽는 테스트야. 마이크 대화나 자동 대사 교대는 아직 지원하지 않아.</p><div id="simpleCurrent" style="background:#f5f7fc;border-radius:15px;padding:18px;margin:14px 0">준비 중</div>
-<button class="simplePrimary" id="simpleContinue" hidden>내 대사 완료 · 다음 진행</button><div class="simpleActions"><button id="simpleStop" disabled>음성 정지</button></div></div>
-</div>
-<div id="simple-settings" hidden>
-<div class="simpleCard"><h2>설정</h2><p class="simpleSub">이전 버전의 대본과 고급 OCR 도구를 그대로 보존했어.</p>
-<div class="simpleActions"><button id="simpleRestoreLegacy">이전 대본 가져오기</button><button id="simpleAdvanced">고급 도구 열기</button></div><button id="simpleSettingsBack" style="margin-top:10px">홈으로</button></div>
-</div>
-<p id="simpleStatus" class="simpleSub" role="status" style="text-align:center;margin:14px 5px"></p></section><header><div><h1>JOON ACTOR</h1><div class="muted">대본 판독 · OCR 테스트 v0.3.1</div></div><img src="./icon.png" alt="JOON ACTOR" width="52" height="52" style="border-radius:12px" onerror="this.style.display='none'"></header>
-<section><h2>내 대본</h2><p class="muted">대본은 브라우저에만 저장돼. 서버로 업로드하지 않아.</p><input id="title" aria-label="대본 제목" placeholder="대본 제목"><div class="actions"><label class="upload">TXT / OCR JSON 열기<input id="import" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="save" class="primary">기기에 저장</button><button id="export">TXT 백업</button></div><div style="margin:12px 0 10px;padding:13px;border-radius:14px;background:#f1f5ff">
-<strong>원본 문자 우선 불러오기</strong><p class="muted" style="margin:6px 0">HWPX 및 글자 선택이 가능한 PDF를 OCR 없이 직접 읽어. 구형 HWP는 HWPX로 변환해야 해.</p>
-<label class="upload">HWPX / PDF 원문 가져오기<input id="structuredImport" type="file" accept=".hwpx,.hwp,.pdf,application/pdf"></label>
-<button id="structuredRestore">추출 결과 복원</button>
-<p id="importStatus" class="stat" role="status">원문 추출 전 · 외부 AI 서버로 업로드하지 않음</p></div>
-<label class="upload" style="margin-top:8px">스캔 PDF 열기<input id="pdfImport" type="file" accept="application/pdf,.pdf"></label><p class="stat" id="status">대본 없음</p><p class="stat">PDF 원문 추출과 스캔형 OCR은 서로 다른 기능이야. 스캔형 PDF는 OCR 오인식 검토가 필요해.</p><div id="pdfPreview"></div></section>
-<section><h2>대본 편집</h2><textarea id="script" placeholder="여기에 대본을 붙여넣거나 TXT 파일을 열어줘."></textarea><div class="actions"><button id="speak">선택 문장 읽기</button><button id="stop">음성 정지</button></div></section>
-<section><h2>리딩 설정</h2><div class="split"><select id="mode" aria-label="연기 모드"><option>대본 그대로</option><option>자연스러운 연기 (개발 예정)</option></select><select id="rate" aria-label="읽기 속도"><option value="0.85">느리게</option><option value="1" selected>보통</option><option value="1.15">빠르게</option></select></div><p class="warning">실시간 마이크 대화, 배역 자동 분리, AI 감정 연기는 아직 연결되지 않았어. 현재는 대본 입력·저장 및 선택 문장 읽기 테스트 버전이야.</p></section>
-<section id="ocrPanel">
-<h2>스캔형 PDF OCR · v0.3.1</h2>
-<p class="ocrHint">스캔 PDF 한글 OCR은 오탈자가 발생할 수 있어. 원본 화면과 인식 결과를 비교하고 교정한 뒤 저장해 줘. OCR은 이 아이폰에서 처리하며, 첫 실행은 언어 모델 다운로드가 필요해. PDF 원본은 서버에 전송하지 않아.</p>
-<div class="ocrRow"><label for="ocrPage">원본 페이지</label><select id="ocrPage"><option value="1">1페이지</option></select><small id="ocrCount">PDF 미선택</small></div>
-<div id="ocrCanvasWrap"><p class="muted">PDF를 불러오면 원본 페이지가 표시돼.</p></div>
-<div class="ocrActions">
-<button id="ocrOne" class="primary" disabled>현재 페이지 판독</button><button id="ocrCompare" disabled>한글 우선 재판독</button>
-<button id="ocrAll" disabled>전체 페이지 순차 판독</button>
-<button id="ocrStop" disabled>중단</button>
-</div>
-<div id="ocrProgress"><div id="ocrFill"></div></div>
-<p class="muted" id="ocrStatus" role="status">PDF를 먼저 불러와 줘.</p>
-<div class="ocrRow"><strong>OCR 결과 · 직접 교정</strong><small id="ocrSaved">미저장</small></div>
-<textarea id="ocrText" spellcheck="false" placeholder="현재 페이지의 인식 결과가 표시돼. 직접 수정할 수 있어."></textarea><details><summary>재판독 결과 비교 (원래 인식 결과 보존)</summary><textarea id="ocrAlternative" spellcheck="false" readonly placeholder="재판독 결과가 여기에 표시돼."></textarea><button id="ocrApply">재판독 결과 적용</button></details>
-<div class="ocrActions">
-<button id="ocrSave" class="primary">이 페이지 저장</button>
-<button id="ocrAnalyze">대사 · 지문 후보 구분</button>
-<button id="ocrExport">전체 TXT 백업</button>
-<button id="ocrJson">전체 JSON 백업</button>
-</div>
-<div id="ocrAnalysis" class="muted">분석 결과는 후보일 뿐 확정된 등장인물·감정 정보가 아니야.</div>
-<p class="ocrHint">한글 우선 판독은 영문이 적은 대본에서 도움이 될 수 있지만 모든 오류를 고치지는 못해. 재판독은 기존 저장 결과를 덮어쓰지 않으며, 직접 비교해 적용해야 해.</p><p class="muted">연습용 실시간 AI 연기는 다음 개발 단계야. 현재는 판독 정확도 검증 단계야.</p>
-</section><section id="structurePanel"><h2>대본 구조 분석 · v0.3.1</h2>
-<p class="muted">대본 편집창에 추출된 원문을 기준으로 장면·배역·대사·지문 후보를 나눠. OCR 오인식은 자동으로 고치지 않고 검토 대상으로 표시해.</p>
-<div class="actions"><button id="structureRun" class="primary">대본 구조 분석</button><button id="structureExport">분석 JSON 백업</button></div>
-<p class="stat" id="structureStatus">분석 전</p>
-<div id="structurePreview" style="max-height:420px;overflow:auto;background:#f8f9fc;border-radius:12px;padding:10px;font-size:14px"></div>
-<p class="warning">이 결과는 자동 분류 후보야. 실제 대본의 배역·지문 정확성을 확인하기 전에는 AI 상대역 연기에 사용하지 않아.</p></section><section id="queuePanel">
-<h2>검증 대사 순서 · v0.3.1</h2>
-<p class="muted">앞에서 생성한 대본 구조 분석을 불러와. 원본 대사를 확인해 배역·지문을 고친 뒤, 확인된 항목만 검증 완료 표시할 수 있어.</p>
-<div class="actions"><button id="queueBuild" class="primary">분석 결과로 목록 만들기</button><button id="queueExport">검증 대사 JSON 백업</button><label class="upload">백업 복원<input id="queueImport" type="file" accept=".json,application/json"></label></div>
-<p id="queueStatus" class="stat" role="status">분석 결과 불러오기 전</p>
-<div id="queueList"></div>
-<p class="stat" id="queueSource">선택 항목 없음</p>
-<div class="twocol"><div><label for="queueKind">항목 종류</label><select id="queueKind"><option value="dialogue">대사</option><option value="action">지문</option><option value="scene">장면</option><option value="unreadable">미판독</option></select></div>
-<div><label for="queueVerified">원본 검증</label><label style="display:flex;align-items:center;gap:8px;background:#f1f5ff;padding:12px;border-radius:12px"><input type="checkbox" id="queueVerified" style="width:auto">원문과 일치 확인</label></div></div>
-<div class="twocol"><div><label for="queueMyRole">배역 이름</label><input id="queueMyRole" placeholder="정확한 배역 이름"></div>
-<div><label for="queueScene">장면</label><input id="queueScene" placeholder="장면 번호 / 장소"></div></div>
-<label for="queueDialogue">대사 또는 지문</label><textarea id="queueDialogue" placeholder="원문과 대조해서 정확하게 수정"></textarea>
-<div class="actions"><button id="queuePrev">이전 대사</button><button id="queueSave" class="primary">수정·검증 저장</button><button id="queueNext">다음 대사</button></div>
-<h2 style="margin-top:22px">검증된 상대역 미리듣기</h2>
-<p class="muted">내 배역은 소리 내어 읽지 않고, 나머지 배역의 검증된 대사만 순서대로 읽어. 이것은 자동 대사 교대나 감정 연기가 아니라 음성 합성 테스트야.</p>
-<label for="queueActor">내 배역</label><select id="queueActor"><option value="">내 배역 선택</option></select>
-<div class="actions"><button id="queuePlay" class="primary">상대역 대사 읽기</button><button id="queueStop" disabled>중지</button></div>
-<p id="queueCurrent" class="stat">검증한 대사가 아직 없어.</p>
-<p class="warning">AI가 발화 종료를 인식하는 기능은 아직 구현되지 않았어. 인물명이 틀린 OCR 문장은 검증 전에 상대역으로 사용하지 않아.</p>
-</section></main><script>
-const $=id=>document.getElementById(id),KEY='joon_actor_local_v1';
-function update(){const t=$('script').value;$('status').textContent=t.length.toLocaleString()+'자 · 로컬 저장 상태는 저장 버튼으로 확인'}
-$('script').addEventListener('input',update);
-$('save').onclick=()=>{try{localStorage.setItem(KEY,JSON.stringify({title:$('title').value,text:$('script').value,savedAt:new Date().toISOString()}));$('status').textContent='✓ 이 기기에 저장 완료 ('+$('script').value.length.toLocaleString()+'자)'}catch(e){alert('저장 실패: '+e.message)}};
-$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{let s=await f.text();if(f.name.toLowerCase().endsWith('.json')){const j=JSON.parse(s);s=Array.isArray(j.pages)?j.pages.map((p,i)=>'=== '+(i+1)+'페이지 ===\n'+(typeof p==='string'?p:JSON.stringify(p))).join('\n\n'):JSON.stringify(j,null,2)}$('script').value=s;$('title').value=f.name;update()}catch(err){alert('읽기 실패: '+err.message)}e.target.value=''};
-$('export').onclick=()=>{const b=new Blob([$('script').value],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=($('title').value||'JOON_ACTOR')+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-$('speak').onclick=()=>{let x=$('script'),s=x.value.slice(x.selectionStart,x.selectionEnd).trim();if(!s){alert('먼저 읽을 문장을 드래그해서 선택해줘.');return}if(!('speechSynthesis'in window)){alert('음성 출력 미지원 브라우저');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang='ko-KR';u.rate=Number($('rate').value);speechSynthesis.speak(u)};
-$('stop').onclick=()=>speechSynthesis?.cancel();
-try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j){$('title').value=j.title||'';$('script').value=j.text||'';$('status').textContent='이전에 저장한 대본을 불러왔어 ('+($('script').value.length).toLocaleString()+'자)'}}catch(e){}
-</script><script>
-(()=>{let pdfURL=null;
-const picker=document.getElementById('pdfImport'),preview=document.getElementById('pdfPreview'),status=document.getElementById('status');
-picker.addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;if(pdfURL)URL.revokeObjectURL(pdfURL);pdfURL=URL.createObjectURL(file);preview.replaceChildren();const frame=document.createElement('iframe');frame.src=pdfURL;frame.title='선택한 PDF 원본';frame.style.cssText='width:100%;height:340px;border:1px solid #dce1e9;border-radius:12px;margin-top:10px';preview.append(frame);status.textContent='PDF 원본 확인 중 · 스캔형 PDF는 OCR JSON을 별도로 선택해 주세요.';picker.value=''});
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f8fc"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon.png"><title>JOON ACTOR · 대사 연습 v1.1</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#172337;background:#f6f8fc}*{box-sizing:border-box}body{margin:0}button,textarea,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:700}header{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;max-width:740px;margin:auto}header b{font-size:19px}main{max-width:740px;margin:auto;padding:10px 16px 70px}h1{font-size:28px;margin:20px 0 8px;line-height:1.35}p{color:#687993;line-height:1.6}input[type=text],textarea,select{background:white;color:#172337;border:1px solid #dce4f0;border-radius:11px;padding:12px;width:100%}textarea{min-height:95px;resize:vertical;line-height:1.6}.row{display:flex;gap:8px;align-items:center;justify-content:space-between}.line{background:white;border:1px solid #e1e8f4;border-radius:16px;padding:13px;margin:12px 0;box-shadow:0 3px 14px #12284b08}.line .row{margin-bottom:10px}.line select{flex:1;min-width:0;background:#f5f8fe}.line button{padding:8px 12px;background:#eef2f9;color:#506580}.line button.del{color:#c6364e;background:#fff0f1}.small{font-size:12px;color:#7c8ea8}.primary{background:#2769ed;color:white}.secondary{background:#e7eef9;color:#365d9c}.actions{display:flex;gap:10px;margin:20px 0}.actions button{flex:1}#add{width:100%;background:#edf4ff;color:#2863c9;border:1px dashed #9cb9e9}#settings{background:white;border-radius:16px;padding:16px;margin:15px 0}#settings label{display:block;font-size:13px;font-weight:700;margin:12px 0 7px}#settings input[type=range]{width:100%}.hidden{display:none!important}#stage{position:fixed;z-index:20;inset:0;background:#111827;color:white;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}.stagehead,.stagefoot{padding:15px 16px;background:#182337}.stagehead{display:flex;justify-content:space-between;align-items:center}.stagehead button,.stagefoot button{background:#2b3c57;color:white}.stagehead small{display:block;color:#adc1dc;margin-top:6px}#scroll{flex:1;overflow:auto;padding:18px 16px;scroll-behavior:smooth}.stline{border:1px solid #33445d;background:#1c293e;border-radius:14px;padding:15px;margin-bottom:12px;opacity:.56}.stline.active{opacity:1;border:2px solid #60a5fa;background:#1c3252}.stline.done{opacity:.3}.stline .role{font-size:12px;font-weight:700;color:#9ec8ff;margin-bottom:10px}.stline.me .role{color:#7ee7b3}.stline.direction .role{color:#ceb1ff}.stline .text{font-size:19px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.stline.active .text{font-size:23px;font-weight:650}#notice{color:#c3d7f1;font-size:13px;min-height:20px;margin-bottom:12px}.stagefoot .row button{flex:1}#finish{position:fixed;z-index:30;inset:0;background:#0009;display:grid;place-items:center;padding:20px}.modal{background:white;border-radius:22px;padding:26px;text-align:center;width:100%;max-width:390px}.modal h2{margin:8px 0}.modal button{width:100%}#status{font-size:12px;color:#718299}@media(max-width:380px){.stline .text{font-size:17px}.stline.active .text{font-size:20px}}
+</style></head><body><header><b>JOON ACTOR <span class="small">v1.1</span></b><button id="voiceBtn" class="secondary">⚙ 음성</button></header><main><h1>대본을 붙여넣고<br>바로 연습하세요.</h1><p>지문은 읽지 않고, 상대역은 음성으로 말합니다. 내 대사는 자동 음성 인식으로 다음 순서로 넘어갑니다.</p><div class="row"><b>대본 제목</b><span id="status">자동 저장</span></div><input type="text" id="title" placeholder="대본 제목"><div class="row" style="margin-top:22px"><h3>대사 순서</h3><span id="count" class="small"></span></div><div id="lines"></div><button id="add">＋ 대사 추가</button><div class="actions"><button id="clear" class="secondary">대본 비우기</button><button id="start" class="primary">▶ 대사 시작</button></div><section id="settings" class="hidden"><div class="row"><b>상대역 음성 설정</b><button id="closeSettings">닫기</button></div><p class="small">기기 음성을 사용합니다. 사람 같은 고품질 AI 음성 API는 아직 연결되지 않았습니다.</p><label>상대방 1 목소리</label><select id="voice1"></select><label>상대방 2 목소리</label><select id="voice2"></select><label>음성 속도 <span id="rateLabel"></span></label><input id="rate" type="range" min="0.75" max="1.15" step="0.01"><label>반응 간격 <span id="pauseLabel"></span></label><input id="pause" type="range" min="0" max="1.5" step="0.1"><div class="actions"><button id="sample1" class="secondary">1 미리듣기</button><button id="sample2" class="secondary">2 미리듣기</button></div></section></main>
+<div id="stage" class="hidden" role="dialog" aria-modal="true"><div class="stagehead"><div><b>● 대사 연습 중</b><small id="progress"></small></div><button id="exit">✕ 닫기</button></div><div id="scroll"><div id="script"></div></div><div class="stagefoot"><div id="notice" aria-live="polite"></div><div class="row"><button id="repeat">↻ 다시 듣기</button><button id="next">다음 →</button></div></div></div>
+<div id="finish" class="hidden"><div class="modal"><h2>✓ 대본 연습 완료</h2><p>모든 대사가 끝났습니다. 대본은 저장돼 있습니다.</p><button id="end" class="primary">종료</button></div></div>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id),K='joon-script-v1',N={direction:'지문',role1:'상대방 1',role2:'상대방 2',me:'나'},D={title:'첫 번째 대본',lines:[{role:'direction',text:'어두운 골목. 두 사람이 마주 선다.'},{role:'role1',text:'여기서 뭐 하는 거야?'},{role:'role2',text:'빨리 대답해.'},{role:'me',text:'그냥 기다리고 있었어.'},{role:'role1',text:'누구를 기다렸는데?'},{role:'direction',text:'잠시 정적이 흐른다.'}],settings:{voice1:'',voice2:'',rate:.96,pause:.5}};let s;try{s=JSON.parse(localStorage.getItem(K))||D;if(!Array.isArray(s.lines))s=D;s.settings={...D.settings,...s.settings}}catch{s=structuredClone(D)};let index=0,token=0,running=false,rec=null,voices=[],timer=0,saveTimer=0;
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(s));$('status').textContent='저장 완료'}catch{$('status').textContent='저장 실패'}};const delayed=()=>{$('status').textContent='저장 중';clearTimeout(saveTimer);saveTimer=setTimeout(save,200)};const norm=t=>String(t).toLowerCase().replace(/[\s.,!?~…·“”"'‘’():;\-]/g,'');const match=(a,b)=>{a=norm(a);b=norm(b);if(!a||!b)return 0;if(a.includes(b))return 1;let j=0;for(const c of a)if(c===b[j])j++;return j/b.length};
+function render(){let host=$('lines');host.replaceChildren();s.lines.forEach((line,i)=>{let card=document.createElement('section');card.className='line';let top=document.createElement('div');top.className='row';let number=document.createElement('span');number.className='small';number.textContent=String(i+1).padStart(2,'0');let role=document.createElement('select');for(let key of Object.keys(N)){let o=document.createElement('option');o.value=key;o.textContent=N[key];role.append(o)}role.value=line.role;role.onchange=()=>{line.role=role.value;delayed()};top.append(number,role);for(let [label,action] of [['↑',-1],['↓',1]]){let b=document.createElement('button');b.textContent=label;b.onclick=()=>{let j=i+action;if(j<0||j>=s.lines.length)return;[s.lines[i],s.lines[j]]=[s.lines[j],s.lines[i]];delayed();render()};top.append(b)}let del=document.createElement('button');del.textContent='×';del.className='del';del.onclick=()=>{s.lines.splice(i,1);delayed();render()};top.append(del);let area=document.createElement('textarea');area.placeholder='대사를 복사하여 붙여넣으세요';area.value=line.text;area.oninput=()=>{line.text=area.value;delayed()};card.append(top,area);host.append(card)});$('count').textContent=s.lines.length+'개'}
+$('title').value=s.title;$('title').oninput=e=>{s.title=e.target.value;delayed()};$('add').onclick=()=>{s.lines.push({role:'me',text:''});delayed();render();$('lines').lastElementChild.querySelector('textarea').focus()};$('clear').onclick=()=>{if(!confirm('대본을 모두 비울까요?'))return;s.lines=[];s.title='';$('title').value='';delayed();render()};
+function voicesLoad(){voices=speechSynthesis.getVoices();let ko=voices.filter(v=>v.lang.toLowerCase().startsWith('ko'));for(let id of ['voice1','voice2']){let el=$(id);el.replaceChildren();let d=new Option('기기 자동 선택','');el.append(d);(ko.length?ko:voices).forEach(v=>el.append(new Option(v.name+' ('+v.lang+')',v.voiceURI)));el.value=s.settings[id]||''}}
+if('speechSynthesis'in window){voicesLoad();speechSynthesis.onvoiceschanged=voicesLoad}
+function speak(text,role,done){if(!('speechSynthesis'in window)){done?.();return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';u.rate=Number(s.settings.rate)||.96;u.pitch=role==='role2'?1.05:1;let key=role==='role2'?'voice2':'voice1';u.voice=voices.find(v=>v.voiceURI===s.settings[key])||voices.filter(v=>v.lang.toLowerCase().startsWith('ko'))[role==='role2'?1:0]||null;let fired=false;u.onend=u.onerror=()=>{if(fired)return;fired=true;done?.()};speechSynthesis.speak(u)}
+function cancel(){clearTimeout(timer);if(rec){rec.onresult=rec.onend=rec.onerror=null;try{rec.abort()}catch{}rec=null}try{speechSynthesis.cancel()}catch{}}
+function notice(t){$('notice').textContent=t}function stageDraw(){let host=$('script');host.replaceChildren();s.lines.forEach((l,i)=>{let card=document.createElement('article');card.className='stline '+(l.role==='me'?'me ':l.role==='direction'?'direction ':'')+(i===index?'active':i<index?'done':'');card.id='current-'+i;let role=document.createElement('div');role.className='role';role.textContent=N[l.role]+(l.role==='role1'||l.role==='role2'?' · 음성':'');let t=document.createElement('div');t.className='text';t.textContent=l.text;card.append(role,t);host.append(card)});$('progress').textContent=Math.min(index+1,s.lines.length)+' / '+s.lines.length;requestAnimationFrame(()=>document.getElementById('current-'+index)?.scrollIntoView({block:'center',behavior:'smooth'}))}
+function stop(){running=false;token++;cancel();$('stage').classList.add('hidden')}
+function step(t){if(!running||t!==token)return;cancel();index++;if(index>=s.lines.length){stop();$('finish').classList.remove('hidden');return}stageDraw();process(t)}
+function listen(t,expected){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){notice('이 브라우저에서 음성 인식을 지원하지 않습니다. 다음 버튼을 이용하세요.');return}let transcript='',last=Date.now(),matched=false,stopped=false,retries=0;const quiet=1250;const check=()=>{if(!running||token!==t)return;if(matched&&Date.now()-last>=quiet){step(t)}else if(matched)timer=setTimeout(check,quiet-(Date.now()-last))};function begin(){if(!running||token!==t||stopped)return;let r=new SR();rec=r;r.lang='ko-KR';r.continuous=true;r.interimResults=true;r.onresult=e=>{if(!running||token!==t)return;let text='';for(let i=0;i<e.results.length;i++)text+=(e.results[i][0]?.transcript||'')+' ';text=text.trim();if(transcript!==text){transcript=text;last=Date.now();clearTimeout(timer)}matched=match(text,expected)>=.9&&norm(text).length>=Math.min(4,norm(expected).length);notice(matched?'✓ 대사 인식됨 · 발화 종료 대기':'🎤 인식 중… '+text.slice(-30));if(matched)timer=setTimeout(check,quiet)};r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){stopped=true;notice('마이크 권한을 허용하거나 다음 버튼으로 진행하세요.')}};r.onend=()=>{if(!running||token!==t||stopped)return;if(matched){clearTimeout(timer);timer=setTimeout(check,Math.max(100,quiet-(Date.now()-last)))}if(++retries<=15)setTimeout(begin,500);else notice('인식이 중단됐습니다. 다음 버튼을 사용하세요.')};try{r.start()}catch{notice('마이크를 시작하지 못했습니다. 다음 버튼을 사용하세요.')}}begin()}
+function process(t){if(!running||t!==token)return;let line=s.lines[index];if(!line){stop();$('finish').classList.remove('hidden');return}if(!line.text.trim()){step(t);return}if(line.role==='direction'){notice('지문 표시 · AI는 읽지 않음');timer=setTimeout(()=>step(t),Math.min(3500,Math.max(1200,line.text.length*55)));return}if(line.role==='me'){notice('🎤 내 대사를 말하세요');listen(t,line.text);return}notice(N[line.role]+' 대사 재생 중');timer=setTimeout(()=>{if(!running||token!==t)return;speak(line.text,line.role,()=>{if(running&&token===t)timer=setTimeout(()=>step(t),s.settings.pause*1000)})},s.settings.pause*1000)}
+$('start').onclick=()=>{if(!s.lines.some(l=>l.text.trim())){alert('대사를 입력하세요');return}stop();index=0;running=true;token++;$('finish').classList.add('hidden');$('stage').classList.remove('hidden');stageDraw();process(token)};$('next').onclick=()=>step(token);$('repeat').onclick=()=>{if(!running)return;cancel();process(token)};$('exit').onclick=stop;$('end').onclick=()=>$('finish').classList.add('hidden');
+$('voiceBtn').onclick=()=>{$('settings').classList.toggle('hidden');if('speechSynthesis'in window)voicesLoad()};$('closeSettings').onclick=()=>$('settings').classList.add('hidden');for(let id of ['voice1','voice2'])$(id).onchange=e=>{s.settings[id]=e.target.value;delayed()};for(let id of ['rate','pause']){$(id).value=s.settings[id];$(id).oninput=e=>{s.settings[id]=+e.target.value;$(id==='rate'?'rateLabel':'pauseLabel').textContent=e.target.value+(id==='rate'?'×':'초');delayed()};$(id==='rate'?'rateLabel':'pauseLabel').textContent=s.settings[id]+(id==='rate'?'×':'초')};$('sample1').onclick=()=>speak('여기서 뭐 하는 거야?','role1');$('sample2').onclick=()=>speak('괜찮아. 천천히 말해.','role2');document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){cancel();notice('앱을 다시 열면 다시 듣기를 눌러주세요')}});render();save();
 })();
-</script><script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>
-(()=>{'use strict';
-const $=id=>document.getElementById(id),status=s=>$('ocrStatus').textContent=s;
-let pdf=null,worker=null,workerKor=null,current=1,records={},running=false,stop=false,rawFile=null,alternative='';
-const KEY='joon_actor_ocr_v020',pdfWorkerUrl='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-function loadScript(src){return new Promise((resolve,reject)=>{let s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(Error('라이브러리를 불러올 수 없어. 인터넷 연결을 확인해 줘.'));document.head.append(s)})}
-async function ensurePdf(){if(!window.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc=pdfWorkerUrl}
-function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify({name:rawFile?.name||'',pages:records,savedAt:new Date().toISOString()}));return true}catch(e){status('저장 공간 부족 또는 기기 저장 실패: '+e.message);return false}}
-function flush(){if(pdf){records[current]=$('ocrText').value;saveLocal()}}
-function setPageText(){alternative='';$('ocrAlternative').value='';let v=records[current]||'';$('ocrText').value=v;$('ocrSaved').textContent=v?'저장된 결과 있음':'판독 전';$('ocrPage').value=String(current);$('ocrCount').textContent=current+' / '+(pdf?.numPages||0)}
-async function renderPage(){if(!pdf)return;try{const page=await pdf.getPage(current),v=page.getViewport({scale:1.5}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await page.render({canvasContext:c.getContext('2d'),viewport:v}).promise;$('ocrCanvasWrap').replaceChildren(c)}catch(e){status('PDF 페이지 표시 오류: '+e.message)}}
-async function gotoPage(p){if(!pdf)return;flush();current=Math.min(pdf.numPages,Math.max(1,p));setPageText();await renderPage()}
-async function pdfLoaded(file){if(!file)return;try{status('PDF 분석 준비 중...');rawFile=file;await ensurePdf();if(pdf){try{await pdf.destroy()}catch(e){}}pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;records={};current=1;const cached=JSON.parse(localStorage.getItem(KEY)||'null');if(cached?.name===file.name&&cached?.pages)records=cached.pages;$('ocrPage').replaceChildren(...Array.from({length:pdf.numPages},(_,i)=>{const o=document.createElement('option');o.value=String(i+1);o.textContent=(i+1)+'페이지';return o}));$('ocrOne').disabled=false;$('ocrAll').disabled=false;$('ocrCompare').disabled=false;setPageText();await renderPage();status(pdf.numPages+'페이지 PDF 연결 완료 · 판독 버튼을 누르면 OCR 시작')}catch(e){status('PDF OCR 준비 실패: '+e.message)}}
-$('pdfImport').addEventListener('change',async e=>{const file=e.target.files[0];if(file)await pdfLoaded(file)},true);
-$('ocrPage').onchange=()=>gotoPage(Number($('ocrPage').value));
-$('ocrSave').onclick=()=>{if(!pdf){status('PDF부터 선택해 줘.');return}flush();$('ocrSaved').textContent='✓ 이 기기에 저장';status(current+'페이지 교정 결과 저장 완료')};
-$('ocrText').oninput=()=>{$('ocrSaved').textContent='수정 중 · 저장 필요'};
-async function ensureOCR(lang='kor+eng'){if(lang==='kor'&&workerKor)return workerKor;if(lang!=='kor'&&worker)return worker;if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');status('한글 OCR 언어 모델 준비 중 (첫 실행 시 다운로드)...');const w=await Tesseract.createWorker(lang,1,{logger:m=>{if(m.status==='recognizing text')status('OCR 인식 중 '+Math.round((m.progress||0)*100)+'%')}});await w.setParameters({preserve_interword_spaces:'1',tessedit_pageseg_mode:'3'});if(lang==='kor')workerKor=w;else worker=w;return w}
-async function extract(n,lang='kor+eng'){
- const page=await pdf.getPage(n),text=await page.getTextContent();
- const joined=text.items.map(x=>x.str).join(' ').trim();
- if(joined.length>100 && lang!=='kor')return {result:joined,method:'PDF 텍스트'};
- const w=await ensureOCR(lang);
- const vp=page.getViewport({scale:2.8});
- const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
- const ctx=c.getContext('2d',{willReadFrequently:true});
- await page.render({canvasContext:ctx,viewport:vp}).promise;
- const img=ctx.getImageData(0,0,c.width,c.height),px=img.data;
- // 회색 노이즈를 줄이고 글자 대비를 높이되 픽셀 위치는 유지한다.
- for(let i=0;i<px.length;i+=4){
-   let g=0.299*px[i]+0.587*px[i+1]+0.114*px[i+2];
-   let v=g<155?Math.max(0,g*0.78):g>225?255:Math.min(255,g*1.13);
-   px[i]=px[i+1]=px[i+2]=v;
- }
- ctx.putImageData(img,0,0);
- try{const o=await w.recognize(c);return {result:o.data.text||'',method:lang==='kor'?'한글 우선 OCR':'고대비 OCR'}}finally{c.width=c.height=0}
-}
-async function run(all){if(!pdf||running)return;running=true;stop=false;$('ocrStop').disabled=false;$('ocrOne').disabled=true;$('ocrAll').disabled=true;$('ocrCompare').disabled=true;if(all)flush();const start=all?1:current,end=all?pdf.numPages:current;let done=0;try{for(let n=start;n<=end;n++){if(stop)break;if(all&&records[n]?.trim()){done++;$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';continue}status(n+' / '+pdf.numPages+'페이지 판독 중...');const o=await extract(n);records[n]=o.result;done++;if(!saveLocal())break;if(n===current){setPageText()}$('ocrFill').style.width=Math.round((n-start+1)/(end-start+1)*100)+'%';status(n+'페이지 '+o.method+' 완료 · '+o.result.length+'자 (검토 필요)');await new Promise(r=>setTimeout(r,20))}status(stop?'판독 중단됨 · 완료 페이지 저장됨':done+'페이지 판독 완료 · 원문 대조 필요')}catch(e){status('판독 오류: '+e.message+' · 완료 페이지는 저장됨')}finally{running=false;$('ocrStop').disabled=true;$('ocrOne').disabled=false;$('ocrAll').disabled=false;setPageText()}}
-$('ocrOne').onclick=async()=>{if(!pdf||running)return;flush();if(records[current]?.trim()&&!confirm('기존 판독 결과를 다시 인식할까? 수정한 내용을 덮어쓸 수 있어. 먼저 JSON 백업을 권장해.'))return;records[current]='';await run(false)};$('ocrAll').onclick=()=>run(true);
-$('ocrCompare').onclick=async()=>{if(!pdf||running)return;flush();running=true;$('ocrCompare').disabled=true;try{status(current+'페이지 한글 우선 재판독 중...');const o=await extract(current,'kor');alternative=o.result;$('ocrAlternative').value=alternative;status('한글 우선 결과 준비됨 · 원본과 기존 판독 결과를 비교한 뒤 적용해 줘.')}catch(e){status('재판독 오류: '+e.message)}finally{running=false;$('ocrCompare').disabled=false}};
-$('ocrApply').onclick=()=>{if(!alternative){status('재판독 결과가 없어.');return}if(!confirm('현재 페이지의 편집 내용이 재판독 결과로 교체돼. 진행할까?'))return;records[current]=alternative;$('ocrText').value=alternative;saveLocal();$('ocrSaved').textContent='✓ 재판독 결과 저장';status('재판독 결과 적용 완료 · 원본 대조 필요')};$('ocrStop').onclick=()=>{stop=true;status('현재 페이지 판독이 끝나면 중단할게.')};
-function download(name,body,type){let b=new Blob([body],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
-$('ocrExport').onclick=()=>{flush();download('JOON_ACTOR_대본_판독.txt',Object.entries(records).sort((a,b)=>+a[0]-+b[0]).map(([n,v])=>'=== '+n+'페이지 ===\n'+v).join('\n\n'),'text/plain;charset=utf-8')};
-$('ocrJson').onclick=()=>{flush();download('JOON_ACTOR_OCR_백업.json',JSON.stringify({version:2,title:rawFile?.name||'대본',pages:Array.from({length:pdf?.numPages||0},(_,i)=>records[i+1]||''),reviewNeeded:true},null,2),'application/json')};
-$('ocrAnalyze').onclick=()=>{flush();const lines=$('ocrText').value.split(/\n/).map(x=>x.trim()).filter(Boolean);let scene=[],dialog=[],action=[];for(const s of lines){if(/^(S[#＃]?\s*\d+|SCENE\s*\d+)/i.test(s))scene.push(s);else if(/^([가-힣]{2,8}|MC|PD|\w{2,8})\s*[:：\t]\s*.+/.test(s))dialog.push(s);else action.push(s)}$('ocrAnalysis').textContent='장면 후보 '+scene.length+'줄 · 대사 후보 '+dialog.length+'줄 · 기타/지문 후보 '+action.length+'줄\n\n[장면]\n'+scene.slice(0,6).join('\n')+'\n\n[대사]\n'+dialog.slice(0,8).join('\n')+'\n\n주의: 스캔 OCR에서는 인물명과 들여쓰기가 손상되어 분류 오류가 많을 수 있어. 확정 전 직접 검토해야 해.'};
-})();
-</script><script src="./document-import.js"></script><script src="./script-structure.js"></script><script src="./dialogue-sequence.js"></script><script src="./script-parser-v2.js"></script><script src="./simple-app.js"></script><button id="simpleReturn" class="primary" style="display:none;position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:100;border-radius:20px">간단 화면으로 돌아가기</button><script>const advToggle=new MutationObserver(()=>{document.getElementById("simpleReturn").style.display=document.body.classList.contains("advanced")?"block":"none"});advToggle.observe(document.body,{attributes:true,attributeFilter:["class"]});</script></body></html>
+</script></body></html>
