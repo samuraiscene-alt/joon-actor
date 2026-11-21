@@ -4,7 +4,7 @@
 *{box-sizing:border-box}html{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#171b27;background:#f5f6fa}body{margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}main{max-width:620px;margin:auto;padding:23px 16px 45px}
 header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 18px}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}.muted{color:#6e798a;font-size:13px;line-height:1.5}section{padding:18px;background:#fff;border-radius:21px;border:1px solid #ebedf2;margin:13px 0;box-shadow:0 3px 12px #22222208}label{display:block;font-size:14px;font-weight:650;margin:12px 0 7px}textarea{width:100%;min-height:90px;resize:vertical;padding:14px;border:1px solid #d9dfe8;border-radius:15px;font:inherit;font-size:16px;line-height:1.6;color:#202837;background:#fff}button{border:0;border-radius:15px;padding:14px 16px;font:inherit;font-weight:650;background:#eaf0ff;color:#275cc1;cursor:pointer}button:disabled{opacity:.43}.primary{background:#2169ed;color:#fff}.row{display:flex;gap:9px;flex-wrap:wrap}.row button{flex:1}.card{background:#f3f6fc;border-radius:15px;padding:15px;margin:10px 0;line-height:1.5}#status{font-weight:700;font-size:17px}#heard{white-space:pre-wrap;min-height:35px}#speakerBadge{font-size:12px;color:#52627d;font-weight:700}.hint{padding:12px;border-radius:12px;background:#fff7e5;color:#755521;font-size:13px;line-height:1.5}a{color:#2366d9;text-decoration:none}#count{font-variant-numeric:tabular-nums}small{display:block;color:#7e8898}.step{display:flex;align-items:center;gap:8px;margin:0 0 8px}.pill{display:inline-block;padding:5px 10px;background:#eaf0ff;border-radius:10px;color:#255bc0;font-size:12px;font-weight:700}.steps{display:flex;gap:5px;margin-bottom:14px}.steps>span{height:7px;background:#e3e6ed;border-radius:8px;flex:1}.steps>span.done{background:#6ca5fb}.steps>span.active{background:#246af0}
 </style></head><body><main>
-<header><div><h1>JOON ACTOR</h1><div class="muted">상대방 → 나 → 상대방 → 나 · v0.4</div></div><img src="./icon.png" alt="" width="52" height="52" style="border-radius:12px"></header>
+<header><div><h1>JOON ACTOR</h1><div class="muted">상대방 → 나 → 상대방 → 나 · v0.5</div></div><img src="./icon.png" alt="" width="52" height="52" style="border-radius:12px"></header>
 <section><h2>4개 대사 입력</h2>
 <div class="step"><span class="pill">1 · 상대방 (음성)</span></div><textarea id="ai1">어젯밤 어디 있었습니까?</textarea>
 <div class="step" style="margin-top:12px"><span class="pill">2 · 나 (마이크)</span></div><textarea id="me1">그 시간에는 집에 있었습니다.</textarea>
@@ -17,7 +17,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin:4px 
 <div class="card"><div id="speakerBadge">대기 중</div><div id="status">시작 버튼을 눌러 줘.</div><p id="currentLine" class="muted"></p></div>
 <div class="row"><button id="mic" disabled>🎙 내 대사 말하기</button><button id="manual" disabled>내 대사 완료 (수동)</button></div>
 <div class="card"><div class="muted">마이크가 인식한 말</div><div id="heard">—</div><small id="score"></small></div>
-<p class="hint" id="hint">2번은 대본과 음성 인식을 비교해. 마지막 4번은 실제 목소리가 들린 다음 약 1.4초 침묵하면 자동 종료해. 침묵만으로 대사의 정확성을 확인하는 것은 아니야. 마이크가 시작되지 않으면 버튼을 직접 눌러 줘.</p>
+<p class="hint" id="hint">2번과 4번 모두 마이크가 받아 적은 문장을 대본과 비교해. 마지막 대사는 충분히 일치한 뒤 약 1.8초 동안 인식 결과가 추가되지 않으면 자동 완료해. 틀리게 인식되면 수동 완료 버튼을 사용할 수 있어.</p>
 <div class="row"><button id="repeat" disabled>현재 상대방 대사 다시 듣기</button><button id="next" disabled>다시 연습</button></div>
 <small id="count" style="margin-top:10px">완료된 4대사 연습: 0회</small>
 </section>
@@ -132,41 +132,54 @@ function finishMine(manual){
 function startMic(){
  if(step!==1&&step!==3)return;
  if(!['ready','await'].includes(phase))return;
- if(step===3){listenLastLine();return}
- if(!Recognition){phase='await';refresh();status('이 브라우저는 자동 음성 인식 미지원 · 수동 완료 사용','마이크 미지원');return}
- stopRec();clearTimers();heard='';finalSpeech='';set('heard','듣는 중…');set('score','');
- const current=token,recognizedStep=step,r=new Recognition();rec=r;
+ if(!Recognition){phase='await';refresh();status('브라우저 음성 인식 미지원 · 수동 완료 사용','마이크');return}
+ stopRec();stopVAD();clearTimers();heard='';finalSpeech='';set('heard','듣는 중…');set('score','');
+ const current=token,which=step,target=$(ids[step]).value,r=new Recognition();rec=r;
  r.lang='ko-KR';r.continuous=true;r.interimResults=true;
+ const isLast=which===3;
+ const readyToComplete=()=>{
+  const transcript=finalSpeech||heard;
+  const score=Math.max(compare(heard,target),compare(finalSpeech,target));
+  const len=words(transcript).length,expected=words(target).length;
+  return len>=Math.max(7,Math.ceil(expected*(isLast?.72:.75)))&&score>=(isLast?.77:.87);
+ };
+ const completeIfReady=()=>{
+  if(token!==current||step!==which||phase!=='listening')return;
+  if(readyToComplete()){set('score','대사 일치 확인 · 발화 종료 판정 (자동)');finishMine(false)}
+  else {phase='await';stopRec();refresh();status('인식된 대사가 부족해. 다시 말하거나 수동 완료를 눌러 줘.','내 차례')}
+ };
  r.onresult=event=>{
-  if(token!==current||rec!==r||step!==recognizedStep)return;
+  if(token!==current||rec!==r||step!==which)return;
   clearTimeout(delay);delay=null;
-  let combined='',nextFinal='';
+  let combined='',final='';
   for(let i=0;i<event.results.length;i++){
    const v=event.results[i][0]?.transcript||'';
-   combined+=v+' ';if(event.results[i].isFinal)nextFinal+=v+' ';
+   combined+=v+' ';if(event.results[i].isFinal)final+=v+' ';
   }
-  heard=combined.trim();finalSpeech=nextFinal.trim();set('heard',heard||'듣는 중…');
-  const score=compare(heard,$(ids[step]).value);
-  set('score','내 대사 일치 추정 '+Math.round(score*100)+'% (참고용)');
-  // Only finalize if text matches closely, not merely on silence.
-  if(words(heard).length>=7&&score>=(step===3?.80:.89)){
-   delay=setTimeout(()=>{if(token===current&&rec===r&&phase==='listening'&&step===recognizedStep)finishMine(false)},850);
+  heard=combined.trim();finalSpeech=final.trim();
+  set('heard',heard||'듣는 중…');
+  const score=Math.max(compare(heard,target),compare(finalSpeech,target));
+  set('score','인식된 글자 '+words(heard).length+'/'+words(target).length+' · 일치 추정 '+Math.round(score*100)+'%');
+  // 실제 말이 인식되었고 예상 대사와 충분히 유사할 때에만
+  // 마지막 결과 이후 1.8초 동안 새 결과가 없으면 완료 처리한다.
+  if(readyToComplete()){
+   delay=setTimeout(()=>{if(token===current&&rec===r&&step===which)completeIfReady()},isLast?1800:850);
   }
  };
- r.onerror=e=>{if(current!==token||rec!==r)return;rec=null;clearTimers();phase='await';refresh();status('마이크 오류 ('+e.error+') · 다시 말하기 또는 수동 완료','마이크')};
+ r.onerror=e=>{
+  if(token!==current||rec!==r)return;
+  rec=null;clearTimers();phase='await';refresh();
+  status('마이크 오류: '+e.error+' · 다시 말하기 또는 수동 완료','마이크');
+ };
  r.onend=()=>{
-  if(current!==token||rec!==r)return;rec=null;clearTimers();
-  if(phase!=='listening'||step!==recognizedStep)return;
-  const target=words($(ids[step]).value);
-  const best=Math.max(compare(finalSpeech,$(ids[step]).value),compare(heard,$(ids[step]).value));
-  const spoken=words(finalSpeech||heard);
-  const required=step===3?.74:.82;
-  set('score','음성 인식 종료 · 최종 일치 추정 '+Math.round(best*100)+'% · 기준 '+Math.round(required*100)+'%');
-  if(spoken.length>=Math.max(7,Math.ceil(target.length*.65))&&best>=required){finishMine(false);return}
-  phase='await';refresh();status('음성 인식이 종료됐지만 대사 일치가 부족해. 다시 말하거나 수동 완료를 눌러 줘.','나 · '+(step+1)+' / 4');
+  if(token!==current||rec!==r)return;
+  rec=null;clearTimers();
+  if(phase!=='listening'||step!==which)return;
+  if(readyToComplete()){finishMine(false);return}
+  phase='await';refresh();status('음성 인식이 끝났지만 대사 확인이 부족해. 다시 말해 줘.','내 차례');
  };
- try{r.start();phase='listening';refresh();status('내 대사를 말해 줘. 마이크 듣는 중','나 · '+(step+1)+' / 4')}
- catch(e){rec=null;phase='await';refresh();status('자동 마이크 시작 실패 · 마이크 버튼을 직접 눌러 줘.','내 차례')}
+ try{r.start();phase='listening';refresh();status(isLast?'마지막 대사를 말해 줘. 받아 적은 문장으로 종료를 판단할게.':'내 대사를 말해 줘. 듣는 중','나 · '+(step+1)+' / 4')}
+ catch(e){rec=null;phase='await';refresh();status('마이크 시작 실패 · 버튼을 다시 눌러 줘.','내 차례')}
 }
 function begin(){
  if(ids.some(id=>!$(id).value.trim())){status('4개 대사를 모두 입력해 줘.','입력 필요');return}
