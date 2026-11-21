@@ -21,8 +21,6 @@ header{display:flex;align-items:center;justify-content:space-between;margin:4px 
 <textarea id="aiLine">어젯밤 어디 있었습니까?</textarea>
 <label for="myLine">나 (아이폰 마이크)</label>
 <textarea id="myLine">그 시간에는 집에 있었습니다.</textarea>
-<label for="responseLine">내 대사 다음에 상대방이 할 말 <span class="muted">(선택)</span></label>
-<textarea id="responseLine" style="min-height:78px" placeholder="비워두면 첫 상대방 대사를 다시 말해요.">그 말을 증명할 사람이 있습니까?</textarea>
 <div class="row"><button id="save">대사 저장</button><button id="reset">처음부터</button></div>
 </section>
 <section>
@@ -35,7 +33,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin:4px 
 <div class="row"><button id="repeat" disabled>상대방 다시 듣기</button><button id="next" disabled>다음 회차 연습</button></div>
 <small id="count" style="margin-top:10px">완료된 대화: 0회</small>
 </section>
-<section><h2>테스트 기준</h2><p class="muted">상대역 음성 → 내 대사 인식 → 내 대사 종료 판단 → 다음 상대역 음성. 인식 결과가 내 대사와 충분히 일치할 때만 자동 진행하고, 불확실하면 멈춰서 수동 진행할 수 있어.</p><p class="muted">이 버전은 정해진 대사를 말하는 음성 교대 기술 검증용이야. 자유 대화, 지문 해석, AI 감정 연기는 아직 연결하지 않았어.</p><a href="./">기존 앱으로 돌아가기</a></section>
+<section><h2>테스트 기준</h2><p class="muted">상대역 음성 → 내 대사 인식 → 내 대사 종료 판단. 이 두 줄이 안정적으로 교대되는지 먼저 시험해. 인식 결과가 내 대사와 충분히 일치할 때만 자동 진행하고, 불확실하면 멈춰서 수동 진행할 수 있어.</p><p class="muted">이 버전은 정해진 대사를 말하는 음성 교대 기술 검증용이야. 자유 대화, 지문 해석, AI 감정 연기는 아직 연결하지 않았어.</p><a href="./">기존 앱으로 돌아가기</a></section>
 </main>
 <script>
 (()=>{
@@ -89,8 +87,7 @@ function finishMine(viaManual=false){
  stopRecognition();clearDelay();phase='speaking';syncButtons();
  if(viaManual)set('score','수동으로 대사 완료');
  count++;set('count','완료된 대화: '+count+'회');
- const response=$('responseLine').value.trim()||$('aiLine').value.trim();
- speak(response,()=>{phase='done';syncButtons();status('1회 대화 완료 · 다시 연습 가능','완료')});
+ phase='done';syncButtons();status('1회 대화 완료 · 다시 연습 가능','완료');set('currentLine','상대방 → 나, 1회 교대 완료');
 }
 function startMic(){
  if(!SpeechRecognition){phase='awaiting';syncButtons();status('이 브라우저에서는 음성 인식을 사용할 수 없어. 수동 완료로 흐름을 시험해 줘.','마이크 미지원');return}
@@ -145,7 +142,7 @@ function begin(){
  });
 }
 function save(){
- try{localStorage.setItem(store,JSON.stringify({ai:$('aiLine').value,mine:$('myLine').value,response:$('responseLine').value}));status('대사가 이 기기에 저장됐어.','저장 완료')}catch(e){status('저장 실패: '+e.message,'오류')}
+ try{localStorage.setItem(store,JSON.stringify({ai:$('aiLine').value,mine:$('myLine').value,response:''}));status('대사가 이 기기에 저장됐어.','저장 완료')}catch(e){status('저장 실패: '+e.message,'오류')}
 }
 try{const prev=JSON.parse(localStorage.getItem(store)||'null');if(prev){$('aiLine').value=prev.ai||'';$('myLine').value=prev.mine||'';$('responseLine').value=prev.response||''}}catch(e){}
 $('save').onclick=save;$('start').onclick=begin;$('stop').onclick=stopAll;
